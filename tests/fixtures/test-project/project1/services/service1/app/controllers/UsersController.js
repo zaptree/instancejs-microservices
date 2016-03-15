@@ -14,7 +14,7 @@ class UsersController extends include('BaseController'){
 		return [
 			{
 				method: ActionWhatever,		// allow for regexp to match mutliple methods ie SecureActionWhatever /^SecureAction/
-				decorator: 'AwesomeDecoratorClass.decoratorMethod'
+				decorator: 'AwesomeDecoratorClass.decoratorMethod' // it could also be an actual method or a string with method name
 			}
 		]
 	}
