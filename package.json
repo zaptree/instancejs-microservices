@@ -1,0 +1,35 @@
+{
+  "name": "instance.js.microservices",
+  "version": "0.0.1",
+  "description": "Microservices Framework",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaptree/microservices.git"
+  },
+  "keywords": [
+    "microservices",
+    "framework"
+  ],
+  "author": "Jumaru",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zaptree/microservices/issues"
+  },
+  "homepage": "https://github.com/zaptree/microservices#readme",
+  "dependencies": {
+    "instance-di": "github:zaptree/di",
+    "lodash": "^4.6.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3"
+  }
+}

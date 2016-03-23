@@ -1,5 +1,5 @@
 module.exports = {
-
+	name: 'service1',	// this is required and will identify the service when another service is trying to communicate in-process
 	modules: [
 		// a list of modules that can be attached
 		'mongo-orm'
@@ -13,3 +13,18 @@ module.exports = {
 		]
 	}
 };
+
+_.merge(
+	{
+		paths: [
+			'one',
+			'two'
+		]
+	},
+	{
+		paths: [
+			'three',
+			'four'
+		]
+	}
+);
