@@ -8,11 +8,11 @@ module.exports = {
 	key: 'system',	// this is required
 	services: [
 		{
-			include: './project1/register'
+			include: './project1'
 		},
-		{
-			include: './project2/register'
-		}
+		//{
+		//	include: './project2'
+		//}
 	]
 };
 

@@ -3,7 +3,10 @@
 module.exports = {
 	services: [
 		{
-			include: ''
+			include: './services/service1/'
+		},
+		{
+			include: './services/service2/'
 		}
 	]
 };

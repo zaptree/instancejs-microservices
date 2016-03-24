@@ -1,5 +1,5 @@
 module.exports = {
-	name: 'project1.service1',	// this is required and will identify the service when another service is trying to communicate in-process
+	name: 'project1.service2',	// this is required and will identify the service when another service is trying to communicate in-process
 	modules: [
 		// a list of modules that can be attached
 		'mongo-orm'
