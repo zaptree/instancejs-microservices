@@ -65,7 +65,7 @@ module.exports = {
 
 // sending messages will be done like this:
 
-this.messenger.send('service/getUser', {
+/*this.messenger.send('service/getUser', {
 	params: {
 		id: '1234'
 	}
@@ -73,4 +73,4 @@ this.messenger.send('service/getUser', {
 // this will be the internal implementation but it should never be used like this in the code although the ability will exist to do so
 this.messenger.listen('service/getUser', function(message){
 
-});
+});*/
