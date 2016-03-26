@@ -2,7 +2,7 @@
   "name": "instance.js.microservices",
   "version": "0.0.1",
   "description": "Microservices Framework",
-  "main": "index.js",
+  "main": "MicroServices.js",
   "directories": {
     "test": "tests"
   },

@@ -9,7 +9,7 @@ var assert = require('chai').assert,
 var Path = require('path');
 
 // project modules
-var MicroServices = require('../../lib');
+var MicroServices = require('../../lib/MicroServices');
 
 describe('lib/index', function(){
 

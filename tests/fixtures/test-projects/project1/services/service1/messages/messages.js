@@ -45,17 +45,25 @@ module.exports = {
 			]
 		}
 	},
-	messengers: {
+	types: {
 		// we define the types of messengers available
 		http: {
 			// this can either be a module in the core, in node_modules or a direct path to the said module. It's
 			// probably going to be preferred to have it from core/node_modules so that when running multiple services
 			// they can share the module. Or I can build the modules in a way that they work with each other.
 			// I should probably have like a used ports list or something of the sorts
-			module: 'http',
+			messenger: 'CoreHttpMessenger',
 			options: {
 				port: 3333,
 				path: '/api',
+				domain: 'localhost'
+			}
+		},
+		http2: {
+			messenger: 'CoreHttpMessenger',
+			options: {
+				port: 3232,
+				path: '/',
 				domain: 'localhost'
 			}
 		}
