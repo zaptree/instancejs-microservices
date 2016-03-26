@@ -1,0 +1,4 @@
+
+-   doing injector.get('core$start') does not work, it only works as injector.get('core/start'), I think this will be confusing
+	also I'm not sure doing $$lodash will work when doing it as a dependency in the constructor since it will be changed to //lodash
+

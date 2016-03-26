@@ -8,8 +8,8 @@ module.exports = {
 	// I need to think how things like factories and stuff get stored so they don't cause conflicts if multiple projects have them
 	// I probably want the factories stored in the /project injector
 	di: {
-		paths: [
-			'/app'
-		]
+		paths: {
+			'app/': 'app/'
+		}
 	}
 };

@@ -159,10 +159,15 @@ describe('lib/index', function(){
 
 		var loadedServices = app.loadServices(services);
 		app.initServices(loadedServices);
+		var service = app.services[projectName];
+		var injector = service.injector;
+		var runStub = injector.stub('CoreStartup', 'run', function(){
+			return Promise.resolve();
+		});
 		// todo: I will need to stub the start service using injector.stub make sure the run does not actually start
 		return app.startServices()
 			.then(function(){
-
+				assert(runStub.calledOnce);
 			});
 	});
 

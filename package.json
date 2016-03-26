@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/zaptree/microservices#readme",
   "dependencies": {
-    "instance-di": "github:zaptree/di",
+    "instance-di": "github:zaptree/di#00_00_02",
     "lodash": "^4.6.1"
   },
   "devDependencies": {
