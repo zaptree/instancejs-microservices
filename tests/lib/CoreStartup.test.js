@@ -11,11 +11,11 @@ var Path = require('path');
 // project modules
 var MicroServices = require('../../lib/MicroServices');
 
-describe('lib/CoreStartup', function(){
+describe('lib/CoreService', function(){
 
 	var TEST_SERVICE_DIR = Path.join(__dirname, '../fixtures/test-projects/project1/services/service1'),
 		injector,
-		coreStartup;
+		coreService;
 
 	beforeEach(function(){
 		var app = new MicroServices({
@@ -26,46 +26,21 @@ describe('lib/CoreStartup', function(){
 		app.initServices(loadedServices);
 		injector = app.services['project1.service1'].injector;
 
-		return injector.get('CoreStartup')
-			.then(function(coreStartupInstance){
-				coreStartup = coreStartupInstance;
+		return injector.get('CoreService')
+			.then(function(coreServiceInstance){
+				coreService = coreServiceInstance;
 			});
 	});
 
-	it('should be able to get an instance of the CoreStartup class', function(){
-		assert.isObject(coreStartup);
+	it('should be able to get an instance of the CoreService class', function(){
+		assert.isObject(coreService);
 	});
 
-	it.only('should do something', function(){
-		var groupedMessages = coreStartup.groupMessages(coreStartup.messages);
+	it('should do something', function(){
+		var groupedMessages = coreService.groupMessages(coreService.messages);
 		assert.equal(_.get(groupedMessages, 'incoming.CoreHttpMessenger.http.messenger'), 'CoreHttpMessenger');
 		assert(_.keys(_.get(groupedMessages, 'incoming.CoreHttpMessenger.http.messages')).length > 0);
 	});
 
-	/*it.only('should start the services', function(){
-		var projectName = 'project1.service1';
-		var settings = {
-			root: TEST_PROJECTS_DIR,
-			environment: 'dev'
-		};
-		var app = new MicroServices(settings);
-
-		var services = [
-			Path.join(TEST_PROJECTS_DIR, '/project1/services/service1')
-		];
-
-		var loadedServices = app.loadServices(services);
-		app.initServices(loadedServices);
-		var service = app.services[projectName];
-		var injector = service.injector;
-		var runStub = injector.stub('CoreStartup', 'run', function(){
-			return Promise.resolve();
-		});
-		// todo: I will need to stub the start service using injector.stub make sure the run does not actually start
-		return app.startServices()
-			.then(function(){
-				assert(runStub.calledOnce);
-			});
-	});*/
 
 });

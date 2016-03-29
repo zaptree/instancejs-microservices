@@ -13,14 +13,23 @@ var MicroServices = require('../../lib/MicroServices');
 
 describe('lib/index', function(){
 
-	var TEST_PROJECTS_DIR = Path.join(__dirname, '../fixtures/test-projects');
+	var TEST_PROJECTS_DIR = Path.join(__dirname, '../fixtures/test-projects'),
+		app;
+
+	beforeEach(function(){
+		app = new MicroServices();
+	});
+
+	afterEach(function(){
+		// app.close();
+	});
 
 	it('should create a new instance of the framework and apply the config settings passed in the constructor', function(){
 		var settings = {
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		assert.deepEqual(app.settings, settings);
 	});
@@ -30,7 +39,7 @@ describe('lib/index', function(){
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 		var config = app.environmentRequire(Path.join(__dirname, '../fixtures/environment-require/config'));
 		var messages = app.environmentRequire(Path.join(__dirname, '../fixtures/environment-require/messages'));
 		assert.equal(config.type, 'local');
@@ -48,7 +57,7 @@ describe('lib/index', function(){
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		var run = function(){
 			app.environmentRequire(Path.join(__dirname, '../fixtures/environment-require/throws'));
@@ -62,7 +71,7 @@ describe('lib/index', function(){
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		var services = app.findServices(TEST_PROJECTS_DIR);
 
@@ -73,10 +82,14 @@ describe('lib/index', function(){
 
 	it('should load the services', function(){
 		var settings = {
+			// these config options are ovverides that will be applied to all services. Primarily for overriding config during testing
+			config: {
+				test: 'hello'
+			},
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		var services = [
 			Path.join(TEST_PROJECTS_DIR, '/project1/services/service1'),
@@ -88,6 +101,7 @@ describe('lib/index', function(){
 		assert.equal(_.keys(loadedServices).length, 2, 'It should have loaded 2 services');
 		_.each(['project1.service1', 'project1.service2'], function(serviceName){
 			assert.isObject(loadedServices[serviceName]);
+			assert.equal(loadedServices[serviceName].config.test, 'hello', 'it should merge config overrides passed in the app settings');
 			assert.isObject(loadedServices[serviceName].config);
 			assert.isObject(loadedServices[serviceName].messages);
 			assert.isObject(loadedServices[serviceName].diConfig);
@@ -100,7 +114,7 @@ describe('lib/index', function(){
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		var services = [
 			Path.join(TEST_PROJECTS_DIR, '/project1/services/service1'),
@@ -123,7 +137,7 @@ describe('lib/index', function(){
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		var services = [
 			Path.join(TEST_PROJECTS_DIR, '/project1/services/service1')
@@ -145,17 +159,13 @@ describe('lib/index', function(){
 			});
 	});
 
-	it('should allow for config overrides passed into the constructor', function(){
-		asert(false, 'NOT IMPLEMENTED');
-	});
-
-	it('should start the services', function(){
+	it('should start the services when calling startServices', function(){
 		var projectName = 'project1.service1';
 		var settings = {
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
 		};
-		var app = new MicroServices(settings);
+		app.setSettings(settings);
 
 		var services = [
 			Path.join(TEST_PROJECTS_DIR, '/project1/services/service1')
@@ -165,14 +175,41 @@ describe('lib/index', function(){
 		app.initServices(loadedServices);
 		var service = app.services[projectName];
 		var injector = service.injector;
-		var runStub = injector.stub('CoreStartup', 'run', function(){
+		var startStub = injector.stub('CoreService', 'start', function(){
 			return Promise.resolve();
 		});
-		// todo: I will need to stub the start service using injector.stub make sure the run does not actually start
 		return app.startServices()
 			.then(function(){
-				assert(runStub.calledOnce);
+				assert(startStub.calledOnce);
 			});
 	});
+
+	it.skip('should load, initialize and start the services when calling start', function(){
+		var settings = {
+			root: TEST_PROJECTS_DIR,
+			environment: 'dev'
+		};
+		app.setSettings(settings);
+
+		// when stubbing on the root injector it stubs it for all services
+		var startStub = app.injector.stub('CoreService', 'start', function(){
+			return Promise.resolve();
+		});
+		return app.start()
+			.then(function(){
+				assert(startStub.calledTwice);
+			});
+	});
+
+	it.skip('should have a close method that will trigger all the services to close (mocked in this case)', function(){
+		asert(false, 'I should separate config from constructor so I can easily create app in beforeEach and close it in afterEach');
+		asert(false, 'NOT IMPLEMENTED');
+	});
+
+	it.skip('might need to not using different injectors in case you want to share something like a db connection between services', function(){
+		assert(true, 'It is probably better to keep them isolated since the services will probably not be sharing connection strings and the likes');
+		assert(false, 'On the other hand why not provide the option');
+		// the main injector will have a path to the core, and the childInjectors will have path to each child service
+	})
 
 });
