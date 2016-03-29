@@ -1,4 +1,10 @@
 
+- upgrade lodash version
+
 -   doing injector.get('core$start') does not work, it only works as injector.get('core/start'), I think this will be confusing
 	also I'm not sure doing $$lodash will work when doing it as a dependency in the constructor since it will be changed to //lodash
 
+- I should allow for loading modules with broken path. i.e. file /app/controllers/users/auth.js can be got with controllers$auth instead of controllers$users$auth
+
+- it should not reload the same module called with a different name, I should probably save the filePath name and when loader return a module, we search the modules
+  to see if one with that path already exists and if it does use that one.

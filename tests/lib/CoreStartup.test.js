@@ -14,7 +14,8 @@ var MicroServices = require('../../lib/MicroServices');
 describe('lib/CoreStartup', function(){
 
 	var TEST_SERVICE_DIR = Path.join(__dirname, '../fixtures/test-projects/project1/services/service1'),
-		injector;
+		injector,
+		coreStartup;
 
 	beforeEach(function(){
 		var app = new MicroServices({
@@ -24,13 +25,21 @@ describe('lib/CoreStartup', function(){
 		var loadedServices = app.loadServices([TEST_SERVICE_DIR]);
 		app.initServices(loadedServices);
 		injector = app.services['project1.service1'].injector;
+
+		return injector.get('CoreStartup')
+			.then(function(coreStartupInstance){
+				coreStartup = coreStartupInstance;
+			});
 	});
 
 	it('should be able to get an instance of the CoreStartup class', function(){
-		return injector.get('CoreStartup')
-			.then(function(coreStartup){
-				assert.isObject(coreStartup);
-			});
+		assert.isObject(coreStartup);
+	});
+
+	it.only('should do something', function(){
+		var groupedMessages = coreStartup.groupMessages(coreStartup.messages);
+		assert.equal(_.get(groupedMessages, 'incoming.CoreHttpMessenger.http.messenger'), 'CoreHttpMessenger');
+		assert(_.keys(_.get(groupedMessages, 'incoming.CoreHttpMessenger.http.messages')).length > 0);
 	});
 
 	/*it.only('should start the services', function(){

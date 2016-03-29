@@ -145,6 +145,10 @@ describe('lib/index', function(){
 			});
 	});
 
+	it('should allow for config overrides passed into the constructor', function(){
+		asert(false, 'NOT IMPLEMENTED');
+	});
+
 	it('should start the services', function(){
 		var projectName = 'project1.service1';
 		var settings = {

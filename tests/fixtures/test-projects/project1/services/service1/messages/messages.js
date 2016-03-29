@@ -18,15 +18,11 @@ module.exports = {
 			responseSchema: 'xxx',
 			controller: 'WhateverController',
 			action: 'ActionWhatever',
-			types: [
-				{
-					type: 'http',
-					options: {
-						method: 'GET',
-						match: '/whatever/:id'
-					}
-				}
-			]
+			type: 'http',
+			options: {
+				method: 'GET',
+				match: '/whatever/:id'
+			}
 		}
 	},
 	outgoing: {
@@ -34,39 +30,47 @@ module.exports = {
 		// also I need to make sure that I don't allow / in service names (and require that services have names)
 		'service1/getUser': {
 			schema: 'xxx',	// if using our own services you don't necessarily need this since the endpoint will throw an error when receiving the message
-			types: [
-				{
-					type: 'http',
-					options: {
-						method: 'GET',
-						match: '/whatever/:id', 	// I will need to reverse engineer the matching to allow passing params
-					}
-				}
-			]
+			type: 'http',
+			options: {
+				method: 'GET',
+				match: '/whatever/:id'
+			}
 		}
 	},
 	types: {
-		// we define the types of messengers available
-		http: {
-			// this can either be a module in the core, in node_modules or a direct path to the said module. It's
-			// probably going to be preferred to have it from core/node_modules so that when running multiple services
-			// they can share the module. Or I can build the modules in a way that they work with each other.
-			// I should probably have like a used ports list or something of the sorts
-			messenger: 'CoreHttpMessenger',
-			options: {
-				port: 3333,
-				path: '/api',
-				domain: 'localhost'
+		incoming: {
+			// we define the types of messengers available
+			http: {
+				// this can either be a module in the core, in node_modules or a direct path to the said module. It's
+				// probably going to be preferred to have it from core/node_modules so that when running multiple services
+				// they can share the module. Or I can build the modules in a way that they work with each other.
+				// I should probably have like a used ports list or something of the sorts
+				messenger: 'CoreHttpMessenger',
+				options: {
+					port: 3333,
+					path: '/api',
+					domain: 'localhost'
+				}
+			},
+			http2: {
+				messenger: 'CoreHttpMessenger',
+				options: {
+					port: 3232,
+					path: '/',
+					domain: 'localhost'
+				}
 			}
 		},
-		http2: {
-			messenger: 'CoreHttpMessenger',
-			options: {
-				port: 3232,
-				path: '/',
-				domain: 'localhost'
+		outgoing: {
+			http: {
+				messenger: 'CoreHttpMessenger',
+				options: {
+					uri: 'http://localhost:4444/api'
+				}
 			}
 		}
+
+
 	}
 };
 
