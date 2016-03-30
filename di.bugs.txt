@@ -1,4 +1,10 @@
 
+- I need to be more flexible with naming scope and setScope (allow for forgetting the leading/trailing / )
+
+- I need an option when specifying types to be flexible about scope or set scope. i.e. for typeFactroy I want it to allow a scope/setScope of / but when in child injectors always use /service
+
+- so this is SUPER IMPORTANT. if i have 2 child injectors with different paths if I have setScope to root and there is a naming conflict what happens then? I think I need to save
+
 - upgrade lodash version
 
 -   doing injector.get('core$start') does not work, it only works as injector.get('core/start'), I think this will be confusing

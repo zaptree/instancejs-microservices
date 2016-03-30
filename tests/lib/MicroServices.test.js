@@ -184,7 +184,7 @@ describe('lib/index', function(){
 			});
 	});
 
-	it.skip('should load, initialize and start the services when calling start', function(){
+	it('should load, initialize and start the services when calling start', function(){
 		var settings = {
 			root: TEST_PROJECTS_DIR,
 			environment: 'dev'
@@ -201,15 +201,29 @@ describe('lib/index', function(){
 			});
 	});
 
-	it.skip('should have a close method that will trigger all the services to close (mocked in this case)', function(){
-		asert(false, 'I should separate config from constructor so I can easily create app in beforeEach and close it in afterEach');
-		asert(false, 'NOT IMPLEMENTED');
-	});
+	it('should stop all running services when calling stop', function(){
+		var settings = {
+			root: TEST_PROJECTS_DIR,
+			environment: 'dev'
+		};
+		app.setSettings(settings);
 
-	it.skip('might need to not using different injectors in case you want to share something like a db connection between services', function(){
-		assert(true, 'It is probably better to keep them isolated since the services will probably not be sharing connection strings and the likes');
-		assert(false, 'On the other hand why not provide the option');
-		// the main injector will have a path to the core, and the childInjectors will have path to each child service
-	})
+		// when stubbing on the root injector it stubs it for all services
+		var startStub = app.injector.stub('CoreService', 'start', function(){
+			return Promise.resolve();
+		});
+		var stopStub = app.injector.stub('CoreService', 'stop', function(){
+			return Promise.resolve();
+		});
+		return app.start()
+			.then(function(){
+				assert(startStub.calledTwice);
+			})
+			.return(app)
+			.call('stop')
+			.then(function(){
+				assert(stopStub.calledTwice);
+			});
+	});
 
 });

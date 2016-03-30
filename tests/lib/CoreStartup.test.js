@@ -36,7 +36,7 @@ describe('lib/CoreService', function(){
 		assert.isObject(coreService);
 	});
 
-	it('should do something', function(){
+	it('should group messages in logical groups for their easier consumption from the messenger objects', function(){
 		var groupedMessages = coreService.groupMessages(coreService.messages);
 		assert.equal(_.get(groupedMessages, 'incoming.CoreHttpMessenger.http.messenger'), 'CoreHttpMessenger');
 		assert(_.keys(_.get(groupedMessages, 'incoming.CoreHttpMessenger.http.messages')).length > 0);
