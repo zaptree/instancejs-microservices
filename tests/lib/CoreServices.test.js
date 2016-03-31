@@ -14,11 +14,12 @@ var MicroServices = require('../../lib/MicroServices');
 describe('lib/CoreService', function(){
 
 	var TEST_SERVICE_DIR = Path.join(__dirname, '../fixtures/test-projects/project1/services/service1'),
+		app,
 		injector,
 		coreService;
 
 	beforeEach(function(){
-		var app = new MicroServices({
+		app = new MicroServices({
 			root: TEST_SERVICE_DIR,
 			environment: 'dev'
 		});
@@ -44,18 +45,26 @@ describe('lib/CoreService', function(){
 		assert(_.keys(_.get(groupedMessages, 'CoreHttpMessenger.outgoing.http.messages')).length > 0);
 	});
 
-	it.only('should create an instance of each messenger and pass in the corresponding messages/options', function(){
-		assert(false, 'make sure messengers use the coreMessengerFactory');
-		return coreService.start()
+	it('should create an instance of each messenger and pass in the corresponding messages/options', function(){
+		var groupedMessages = coreService.groupMessages(coreService.messages);
+
+		var startStub = app.injector.stub('CoreHttpMessenger', 'start', function(){
+			return Promise.resolve();
+		});
+		return coreService.start(groupedMessages.CoreHttpMessenger, 'CoreHttpMessenger')
 			.then(function(){
-				assert(false);
+				assert(startStub.calledOnce, 'it should call the start method on the CoreHttpMessenger class');
+				assert(startStub.calledWith(groupedMessages.CoreHttpMessenger), 'it should call the start method on the CoreHttpMessenger class');
 			});
 	});
 
 	it('should start the services when calling start', function(){
+		var startStub = app.injector.stub('CoreHttpMessenger', 'start', function(){
+			return Promise.resolve();
+		});
 		return coreService.start()
 			.then(function(){
-				assert(false);
+				assert(startStub.callCount > 0, 'it should call the start method on the CoreHttpMessenger class');
 			});
 	});
 
