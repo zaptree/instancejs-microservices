@@ -47,17 +47,19 @@ module.exports = {
 				// I should probably have like a used ports list or something of the sorts
 				messenger: 'CoreHttpMessenger',
 				options: {
+					middleware: [],
 					port: 3333,
-					path: '/api',
-					domain: 'localhost'
+					path: '/api/v1',
+					host: 'localhost'
 				}
 			},
 			http2: {
 				messenger: 'CoreHttpMessenger',
 				options: {
+					middleware: [],
 					port: 3232,
-					path: '/',
-					domain: 'localhost'
+					path: '/api/v2',
+					host: 'localhost'
 				}
 			}
 		},
