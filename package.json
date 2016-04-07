@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/zaptree/microservices#readme",
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookies": "^0.6.1",
     "express": "^4.13.4",
     "instance-di": "github:zaptree/di#00_00_02",
     "lodash": "^4.6.1",

@@ -14,10 +14,10 @@ var request = Promise.promisify(Request);
 
 
 // project modules
-var MicroServices = require('../../../lib/MicroServices');
+var MicroServices = require('../../../../lib/MicroServices');
 
 describe('lib/Messengers/CoreHttpMessenger', function () {
-	var TEST_SERVICE_DIR = Path.join(__dirname, '../../fixtures/test-projects/project1/services/service1'),
+	var TEST_SERVICE_DIR = Path.join(__dirname, '../../../fixtures/test-projects/project1/services/service1'),
 		app,
 		injector,
 		coreHttpMessenger,
@@ -58,7 +58,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			})
 			.then(function(){
 				return request({
-					'url': httpBaseUrl
+					'url': httpBaseUrl + 'hello/world?whatever=1&hello=3'
 				})
 			})
 			.spread(function(response, result){
