@@ -16,13 +16,10 @@ module.exports = {
 			// or maybe I pass the schema through http.schemaTransform that adds headers and such stuff. Then I have a schema for each type or just merge all transforms
 			schema: 'filename/property.lodash.gettable',
 			responseSchema: 'xxx',
-			controller: 'WhateverController',
-			action: 'ActionWhatever',
 			type: 'http',
-			options: {
-				method: 'GET',
-				match: '/whatever/:id'
-			}
+			action: 'WhateverController.ActionWhatever',
+			method: 'GET',
+			match: '/whatever/:id'
 		}
 	},
 	outgoing: {

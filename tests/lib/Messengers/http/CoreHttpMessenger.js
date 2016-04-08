@@ -48,7 +48,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			});
 	});
 
-	it.only('should ', function () {
+	it('should ', function () {
 
 		return coreHttpMessenger
 			.start({
