@@ -2,7 +2,13 @@
 
 module.exports = {
 	incoming: {
-		'getUser': {
+		'getUsers': {
+			type: 'http',
+			action: 'UsersController.getUsers',
+			method: 'GET',
+			match: '/users'
+		},
+		'example': {
 			// filters will be classes that work like middleware with hooks for things like before and after and so on
 			filters: [
 				{

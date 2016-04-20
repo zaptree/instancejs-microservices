@@ -40,7 +40,122 @@ describe('lib/Messengers/Http/CoreHttpRouter', function () {
 			});
 	});
 
-	it.only('should match the request and return the correct action/params when passing it through the matchUrl', function () {
+	it('should match the request correctly depending on the method', function(){
+		var router = new CoreHttpRouter({
+			'msg1': {
+				action: 'controller.msg1',
+				method: 'GET',
+				match: '/user/(:id)'
+			},
+			'msg2': {
+				action: 'controller.msg2',
+				match: '/news/(:id)'
+			},
+			'msg3': {
+				action: 'controller.msg3',
+				method: 'POST',
+				match: '/user/(:id)'
+			}
+		});
+		var requestExpectations = [
+			{
+				request: {
+					method: 'DELETE',
+					url: '/user/14'
+				},
+				expectation: false
+			},
+			{
+				request: {
+					method: 'GET',
+					url: '/user/14'
+				},
+				expectation: {
+					action: 'controller.msg1',
+					params: {
+						id: '14'
+					}
+				}
+			},
+			{
+				request: {
+					method: 'DELETE',
+					url: '/news/14'
+				},
+				expectation: {
+					action: 'controller.msg2',
+					params: {
+						id: '14'
+					}
+				}
+			},
+			{
+				request: {
+					method: 'POST',
+					url: '/user/14'
+				},
+				expectation: {
+					action: 'controller.msg3',
+					params: {
+						id: '14'
+					}
+				}
+			}
+		];
+
+		_.each(requestExpectations, (requestExpectation, i) => {
+			var result = router.matchUrl(requestExpectation.request);
+			assert.deepEqual(result, requestExpectation.expectation, 'Test ' + i + ' should pass');
+		});
+
+	});
+
+	it('should match the request correctly depending on the query params', function(){
+		var router = new CoreHttpRouter({
+			'msg1': {
+				action: 'controller.msg1',
+				method: 'GET',
+				query: {
+					name: true
+				},
+				match: '/user/(:id)'
+			},
+		});
+		var requestExpectations = [
+			{
+				request: {
+					method: 'GET',
+					url: '/user/14',
+					query: {
+					}
+				},
+				expectation: false
+			},
+			{
+				request: {
+					method: 'GET',
+					url: '/user/14',
+					query: {
+						name: 'john'
+					}
+				},
+				expectation: {
+					action: 'controller.msg1',
+					params: {
+						id: '14'
+					}
+				}
+			}
+		];
+
+		_.each(requestExpectations, (requestExpectation, i) => {
+			var result = router.matchUrl(requestExpectation.request);
+			assert.deepEqual(result, requestExpectation.expectation, 'Test ' + i + ' should pass');
+		});
+
+	});
+
+	it('should match the request and return the correct action/params when passing it through the matchUrl', function () {
 		var router = new CoreHttpRouter({
 			'msg1': {
 				action: 'controller.msg1',

@@ -43,12 +43,12 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				var groupedMessages = coreService.groupMessages(coreService.messages);
 				messageOptions = groupedMessages.CoreHttpMessenger;
 				http = messageOptions.incoming.http;
-				httpBaseUrl = `http://${http.options.host}:${http.options.port}${http.options.path}/`;
+				httpBaseUrl = `http://${http.options.host}:${http.options.port}${http.options.path}`;
 				coreHttpMessenger = coreHttpMessengerInstance;
 			});
 	});
 
-	it('should ', function () {
+	it.only('should ', function () {
 
 		return coreHttpMessenger
 			.start({
@@ -58,12 +58,19 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			})
 			.then(function(){
 				return request({
-					'url': httpBaseUrl + 'hello/world?whatever=1&hello=3'
+					'url': httpBaseUrl + '/users'
 				})
 			})
 			.spread(function(response, result){
+				assert.equal(response.statusCode, 200);
 				return result;
 			});
+	});
+	it('should handle errors consistently between in-process / http', function(){
+		// with http when you will call you just get a bad statusCode, I need to make sure when one service calls the
+		// other that the handling will be the same. ( I could have the outgoing messenger throw an error when it recieves a 500
+		// but I'm not sure I like that
+		assert(false);
 	});
 
 
