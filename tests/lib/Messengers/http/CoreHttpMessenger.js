@@ -58,12 +58,13 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			})
 			.then(function(){
 				return request({
-					'url': httpBaseUrl + '/users'
+					url: httpBaseUrl + '/users',
+					json: true
 				})
 			})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
-				return result;
+				assert.isArray(result.users, 'It should return the list of users');
 			});
 	});
 	it('should handle errors consistently between in-process / http', function(){

@@ -10,7 +10,8 @@ module.exports = {
 	// I probably want the factories stored in the /project injector
 	di: {
 		paths: {
-			'app/': 'app/'
+			// fixme: I need to change the di to allow for app/ or app
+			'app': 'app'
 		}
 	}
 };

@@ -1,4 +1,6 @@
 
+
+
 - I need to be more flexible with naming scope and setScope (allow for forgetting the leading/trailing / )
 
 - I need an option when specifying types to be flexible about scope or set scope. i.e. for typeFactroy I want it to allow a scope/setScope of / but when in child injectors always use /service

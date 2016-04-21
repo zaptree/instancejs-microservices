@@ -11,6 +11,7 @@ class UsersController extends include('BaseController'){
 	}
 
 	get decorators(){
+		this.whatever;
 		return [
 			{
 				method: ActionWhatever,		// allow for regexp to match mutliple methods ie SecureActionWhatever /^SecureAction/
@@ -19,9 +20,19 @@ class UsersController extends include('BaseController'){
 		]
 	}
 
-	constructor(config, UsersModel){
-		this.config = config;
-		this.usersModel = UsersModel;
+	constructor($messenger){
+		super();
+		this.messenger = $messenger;
+	}
+
+	getUsers(){
+		return {
+			users: [
+				'john',
+				'nick',
+				'maria'
+			]
+		}
 	}
 
 	*ActionWhatever(message){
