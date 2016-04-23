@@ -8,6 +8,21 @@ module.exports = {
 			method: 'GET',
 			match: '/users'
 		},
+		'createUser': {
+			type:'http',
+			action: 'UsersController.createUser',
+			method: 'POST',
+			match: '/users/create/:type',
+			query: {
+				id: true
+			}
+		},
+		'loginUser': {
+			type:'http',
+			action: 'UsersController.loginUser',
+			method: 'POST',
+			match: '/users/login'
+		},
 		'example': {
 			// filters will be classes that work like middleware with hooks for things like before and after and so on
 			filters: [
