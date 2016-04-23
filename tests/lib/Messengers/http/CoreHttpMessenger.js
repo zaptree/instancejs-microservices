@@ -48,6 +48,10 @@ describe.only('lib/Messengers/CoreHttpMessenger', function () {
 			});
 	});
 
+	afterEach(function(){
+		return coreHttpMessenger.stop();
+	});
+
 	it('should successfully start the http servers and respond to http requests', function () {
 
 		return coreHttpMessenger
@@ -150,12 +154,9 @@ describe.only('lib/Messengers/CoreHttpMessenger', function () {
 				var cookies = jar.getCookies(httpBaseUrl);
 				var usernameCookie = _.find(cookies, {key:'username'});
 
-				// todo: set statusCOde also
-
 				assert.equal(response.statusCode, 401);
 				assert.equal(_.get(usernameCookie, 'value'), 'test@test.com', 'it should return the username cookie');
 				assert.equal(response.headers['content-type'], 'application/xml', 'it should have the properly set content-type header');
-				//assert.deepEqual(result, values, 'it should have got all the values');
 			});
 
 	});

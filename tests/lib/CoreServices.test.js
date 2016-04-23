@@ -68,5 +68,9 @@ describe('lib/CoreService', function(){
 			});
 	});
 
+	it('should stop all running messengers', function(){
+		assert(false);
+	});
+
 
 });
