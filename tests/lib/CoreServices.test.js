@@ -48,29 +48,49 @@ describe('lib/CoreService', function(){
 	it('should create an instance of each messenger and pass in the corresponding messages/options', function(){
 		var groupedMessages = coreService.groupMessages(coreService.messages);
 
-		var startStub = app.injector.stub('CoreHttpMessenger', 'start', function(){
-			return Promise.resolve();
-		});
+		var stubs = stubMessengers();
 		return coreService.start(groupedMessages.CoreHttpMessenger, 'CoreHttpMessenger')
 			.then(function(){
-				assert(startStub.calledOnce, 'it should call the start method on the CoreHttpMessenger class');
-				assert(startStub.calledWith(groupedMessages.CoreHttpMessenger), 'it should call the start method on the CoreHttpMessenger class');
+				assert(stubs.CoreHttpMessenger.start.calledOnce, 'it should call the start method on the CoreHttpMessenger class');
+				assert(stubs.CoreHttpMessenger.start.calledWith(groupedMessages.CoreHttpMessenger), 'it should call the start method on the CoreHttpMessenger class');
 			});
 	});
 
 	it('should start the services when calling start', function(){
-		var startStub = app.injector.stub('CoreHttpMessenger', 'start', function(){
-			return Promise.resolve();
-		});
+		var stubs = stubMessengers();
 		return coreService.start()
 			.then(function(){
-				assert(startStub.callCount > 0, 'it should call the start method on the CoreHttpMessenger class');
+				assert(stubs.CoreHttpMessenger.start.callCount > 0, 'it should call the start method on the CoreHttpMessenger class');
 			});
 	});
 
 	it('should stop all running messengers', function(){
-		assert(false);
+		var stubs = stubMessengers();
+		return coreService.start()
+			.then(function(){
+				return coreService.stop();
+			})
+			.then(function(){
+				assert(stubs.CoreHttpMessenger.stop.calledOnce, 'it should call the start method on the CoreHttpMessenger class');
+			});
 	});
+
+	function stubMessengers(){
+		var stubs = {};
+		_.each(['CoreHttpMessenger','CoreRabbitMQMessenger','CoreRpcMessenger'], function(messenger){
+			var start = app.injector.stub(messenger, 'start', function(){
+				return Promise.resolve();
+			});
+			var stop = app.injector.stub(messenger, 'stop', function(){
+				return Promise.resolve();
+			});
+			stubs[messenger] = {
+				start: start,
+				stop: stop
+			};
+		});
+		return stubs;
+	}
 
 
 });

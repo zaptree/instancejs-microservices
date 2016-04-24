@@ -25,8 +25,31 @@ class UsersController extends include('BaseController'){
 		this.messenger = $messenger;
 	}
 
-	getUsers(message){
+	getUsers(){
 		return {
+			version: 1,
+			users: [
+				'john',
+				'nick',
+				'maria'
+			]
+		}
+	}
+
+	getUsers2(){
+		return {
+			version: 2,
+			users: [
+				'john',
+				'nick',
+				'maria'
+			]
+		}
+	}
+
+	getUsers3(){
+		return {
+			version: 3,
 			users: [
 				'john',
 				'nick',
