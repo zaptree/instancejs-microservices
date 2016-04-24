@@ -103,10 +103,7 @@ describe('lib/Messengers/Http/CoreHttpRouter', function () {
 			}
 		];
 
-		_.each(requestExpectations, (requestExpectation, i) => {
-			var result = router.matchUrl(requestExpectation.request);
-			assert.deepEqual(result, requestExpectation.expectation, 'Test ' + i + ' should pass');
-		});
+		assertExpecatations(router, requestExpectations);
 
 	});
 
@@ -148,10 +145,7 @@ describe('lib/Messengers/Http/CoreHttpRouter', function () {
 			}
 		];
 
-		_.each(requestExpectations, (requestExpectation, i) => {
-			var result = router.matchUrl(requestExpectation.request);
-			assert.deepEqual(result, requestExpectation.expectation, 'Test ' + i + ' should pass');
-		});
+		assertExpecatations(router, requestExpectations);
 
 	});
 
@@ -409,11 +403,17 @@ describe('lib/Messengers/Http/CoreHttpRouter', function () {
 			}
 		];
 
-		_.each(requestExpectations, (requestExpectation, i) => {
-			var result = router.matchUrl(requestExpectation.request);
-			assert.deepEqual(result, requestExpectation.expectation, 'Test ' + i + ' should pass');
-		});
+		assertExpecatations(router, requestExpectations);
 	});
 
-
+	function assertExpecatations(router, requestExpectations){
+		_.each(requestExpectations, (requestExpectation, i) => {
+			var result = router.matchUrl(requestExpectation.request);
+			if(result){
+				result.action = result.message.action;
+				result = _.omit(result, 'message');
+			}
+			assert.deepEqual(result, requestExpectation.expectation, 'Test ' + i + ' should pass');
+		});
+	}
 });
