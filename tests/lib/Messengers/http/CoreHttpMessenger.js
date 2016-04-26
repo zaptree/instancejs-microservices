@@ -76,7 +76,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
-				assert(response.headers['content-type'].indexOf('application/json') > -1, 'it shoulr return the correct content-type header');
+				assert(response.headers['content-type'].indexOf('application/json') > -1, 'it should return the correct content-type header');
 				assert.isArray(result.users, 'It should return the list of users');
 			});
 	});
@@ -210,6 +210,29 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				});
 
 			});
+	});
+
+	it.only('should communicate with an another service using http if no inProc service is specified', function(){
+		return coreHttpMessenger
+			.start({
+				incoming: {
+					http: http
+				}
+			})
+			.then(function(){
+				return request({
+					url: httpBaseUrl + '/getRemoteUsers',
+					json: true
+				})
+			})
+			.spread(function(response, result){
+				assert.equal(response.statusCode, 200);
+				assert.isArray(result.users, 'It should return the list of users');
+			});
+	});
+
+	it('should communicate with an another service using inProc is a service is specified', function(){
+
 	});
 
 	it.skip('should cleanly run the tests', function(){

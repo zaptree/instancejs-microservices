@@ -8,6 +8,18 @@ module.exports = {
 			method: 'GET',
 			match: '/users'
 		},
+		'getRemoteUsers': {
+			type: 'http',
+			action: 'UsersController.getRemoteUsers',
+			method: 'GET',
+			match: '/getRemoteUsers'
+		},
+		'getRemoteUsersInProc': {
+			type: 'http',
+			action: 'UsersController.getRemoteUsersInProc',
+			method: 'GET',
+			match: '/getRemoteUsersInProc'
+		},
 		'getUsers2': {
 			type: 'http2',
 			action: 'UsersController.getUsers2',
@@ -58,13 +70,16 @@ module.exports = {
 	outgoing: {
 		// the key must be name of service/incoming message name, I should automatically use in-memory communication if the service is available
 		// also I need to make sure that I don't allow / in service names (and require that services have names)
-		'service1/getUser': {
-			schema: 'xxx',	// if using our own services you don't necessarily need this since the endpoint will throw an error when receiving the message
+		'getUsers': {
 			type: 'http',
-			options: {
-				method: 'GET',
-				match: '/whatever/:id'
-			}
+			method: 'GET',
+			url: 'http://localhost:3333/api/v1/users'
+		},
+		'getUsersInProc': {
+			service: 'service1',
+			type: 'http',
+			method: 'GET',
+			match: 'http://localhost:3333/api/v1/users'
 		}
 	},
 	types: {
@@ -99,10 +114,17 @@ module.exports = {
 			}
 		},
 		outgoing: {
+			// we can have a generic http which would need full url specified
 			http: {
 				messenger: 'CoreHttpMessenger',
+				url: ''
+			},
+			// we can have a preset for a specific service so only the path needs to be set in each message
+			service1Http: {
+				service: 'service1',
+				messenger: 'CoreHttpMessenger',
 				options: {
-					uri: 'http://localhost:4444/api'
+					url: 'http://localhost:4444/api'
 				}
 			}
 		}

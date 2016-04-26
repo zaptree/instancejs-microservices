@@ -72,6 +72,22 @@ class UsersController extends include('BaseController'){
 		this.messenger.response.set('statusCode', 401);
 		return '<Response><username>'+ message.body.username +'</username></Response>';
 	}
+	getRemoteUsers(){
+
+		return this.messenger.send('getUsers')
+			.then(function(users){
+				return users;
+			})
+
+	}
+	getRemoteUsersInProc(){
+
+		return this.messenger.send('getUsersInProc')
+			.then(function(users){
+				return users;
+			})
+
+	}
 
 	//*ActionWhatever(message){
 	//	var user = yield this.usersModel.get(message.body.id);
