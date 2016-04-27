@@ -14,6 +14,12 @@ module.exports = {
 			method: 'GET',
 			match: '/getRemoteUsers'
 		},
+		'createRemoteUser': {
+			type: 'http',
+			action: 'UsersController.createRemoteUser',
+			method: 'GET',
+			match: '/createRemoteUser'
+		},
 		'getRemoteUsersInProc': {
 			type: 'http',
 			action: 'UsersController.getRemoteUsersInProc',
@@ -70,6 +76,14 @@ module.exports = {
 	outgoing: {
 		// the key must be name of service/incoming message name, I should automatically use in-memory communication if the service is available
 		// also I need to make sure that I don't allow / in service names (and require that services have names)
+		'createUser': {
+			type: 'http',
+			method: 'POST',
+			url: 'http://localhost:3333/api/v1/users/create/:type',
+			query: {
+				id: true
+			}
+		},
 		'getUsers': {
 			type: 'http',
 			method: 'GET',

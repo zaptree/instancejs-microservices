@@ -212,7 +212,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			});
 	});
 
-	it.only('should communicate with an another service using http if no inProc service is specified', function(){
+	it('should communicate with an another service using http if no inProc service is specified', function(){
 		return coreHttpMessenger
 			.start({
 				incoming: {
@@ -228,6 +228,31 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert.isArray(result.users, 'It should return the list of users');
+			});
+	});
+
+	it('should communicate with an another service using http and reverse match the url params', function(){
+		return coreHttpMessenger
+			.start({
+				incoming: {
+					http: http
+				}
+			})
+			.then(function(){
+				return request({
+					url: httpBaseUrl + '/createRemoteUser',
+					json: true
+				})
+			})
+			.spread(function(response, result){
+				assert.equal(response.statusCode, 200);
+				assert.deepEqual(result, {
+					"name": "john",
+					"type": "admin",
+					"id": "15",
+					"token": "token",
+					"sessionId": "123456"
+				});
 			});
 	});
 

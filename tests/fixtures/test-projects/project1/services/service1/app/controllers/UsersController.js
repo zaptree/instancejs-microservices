@@ -80,6 +80,31 @@ class UsersController extends include('BaseController'){
 			})
 
 	}
+	createRemoteUser(){
+
+		return this.messenger.send('createUser', {
+			params: {
+				type: 'admin'
+			},
+			query: {
+				id: 15
+			},
+			body: {
+				name: 'john'
+			},
+			headers: {
+				token: 'token'
+			},
+			cookies: {
+				'session-id': '123456'
+			}
+
+		})
+			.then(function(resp){
+				return resp;
+			})
+
+	}
 	getRemoteUsersInProc(){
 
 		return this.messenger.send('getUsersInProc')
