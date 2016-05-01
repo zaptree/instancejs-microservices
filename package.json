@@ -31,6 +31,7 @@
     "instance-di": "github:zaptree/di#00_00_02",
     "lodash": "^4.6.1",
     "request": "^2.69.0",
+    "serve-static": "^1.10.2",
     "vhost": "^3.0.2"
   },
   "devDependencies": {

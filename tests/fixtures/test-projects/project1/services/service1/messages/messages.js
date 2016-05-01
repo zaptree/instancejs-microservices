@@ -101,30 +101,33 @@ module.exports = {
 			// we define the types of messengers available
 			http: {
 				messenger: 'CoreHttpMessenger',
-				options: {
-					middleware: [],
-					port: 3333,
-					path: '/api/v1',
-					host: 'localhost'
-				}
+				middleware: [],
+				port: 3333,
+				path: '/api/v1',
+				host: 'localhost'
 			},
 			http2: {
 				messenger: 'CoreHttpMessenger',
-				options: {
-					middleware: [],
-					port: 3232,
-					path: '/api/v2',
-					host: 'localhost'
-				}
+				middleware: [],
+				port: 3232,
+				path: '/api/v2',
+				host: 'localhost'
 			},
 			http3: {
 				messenger: 'CoreHttpMessenger',
-				options: {
-					middleware: [],
-					port: 3333,
-					path: '/api/v2',
-					host: '127.0.0.1'
-				}
+				middleware: [],
+				port: 3333,
+				path: '/api/v2',
+				host: '127.0.0.1'
+			},
+			static: {
+				messenger: 'CoreHttpMessenger',
+				middleware: [],
+				port: 3333,
+				staticFolders: {
+					'/': './static'
+				},
+				host: '127.0.0.1'
 			}
 		},
 		outgoing: {

@@ -20,7 +20,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 	var TEST_SERVICE_DIR = Path.join(__dirname, '../../../fixtures/test-projects/project1/services/service1'),
 		app,
 		injector,
-		coreHttpMessenger,
+		staticBaseUrl = 'http://127.0.0.1:3333',
 		httpBaseUrl = 'http://localhost:3333/api/v1',
 		http2BaseUrl = 'http://localhost:3232/api/v2',
 		http3BaseUrl = 'http://127.0.0.1:3333/api/v2';
@@ -190,6 +190,15 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert(result.users.length > 0);
+			});
+	});
+
+	it('should successfully serve static files', function(){
+		return request({
+			url: staticBaseUrl + '/info.txt'
+		})
+			.spread(function(response,result){
+				assert.equal(result.trim(), 'static file');
 			});
 	});
 
