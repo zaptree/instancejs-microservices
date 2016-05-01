@@ -2,6 +2,11 @@
 
 module.exports = {
 	incoming: {
+		'getData': {
+			type: 'http',
+			action: 'UsersController.getData',
+			match: '/getData/(:type)'
+		},
 		'getUsers': {
 			type: 'http',
 			action: 'UsersController.getUsers',

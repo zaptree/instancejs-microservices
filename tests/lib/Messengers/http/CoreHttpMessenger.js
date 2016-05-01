@@ -43,13 +43,13 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 	it('should successfully start the http servers and respond to http requests', function () {
 
 		return request({
-			url: httpBaseUrl + '/users',
+			url: httpBaseUrl + '/getData?source=simpleRequest',
 			json: true
 		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert(response.headers['content-type'].indexOf('application/json') > -1, 'it should return the correct content-type header');
-				assert.isArray(result.users, 'It should return the list of users');
+				assert.equal(result.message.query.source, 'simpleRequest');
 			});
 	});
 
@@ -67,7 +67,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 		jar.setCookie(cookie, httpBaseUrl);
 
 		return request({
-			url: httpBaseUrl + '/users/create/' + values.type,
+			url: httpBaseUrl + '/getData/' + values.type,
 			method: 'POST',
 			jar: jar,
 			headers: {
@@ -83,7 +83,11 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
-				assert.deepEqual(result, values, 'it should have got all the values');
+				assert.equal(result.message.body.name, values.name);
+				assert.equal(result.message.headers.token, values.token);
+				assert.equal(result.message.query.id, values.id);
+				assert.equal(result.message.params.type, values.type);
+				assert.equal(result.message.cookies['session-id'], values.sessionId);
 			});
 	});
 
@@ -111,16 +115,6 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				assert.equal(response.headers['content-type'], 'application/xml', 'it should have the properly set content-type header');
 			});
 
-	});
-
-	it.skip('should make sure set modules that are requestSingletons and values have a setScope === to scope',function(){
-		// run a couple of request that have a timeout that after x time uses the injector to get $request and make sure it is different
-	});
-	it.skip('should handle errors consistently between in-process / http', function(){
-		// with http when you will call you just get a bad statusCode, I need to make sure when one service calls the
-		// other that the handling will be the same. ( I could have the outgoing messenger throw an error when it recieves a 500
-		// but I'm not sure I like that
-		assert(false);
 	});
 
 	it('should reuse the server port when multiple domains are used on same port and run servers on different ports', function(){
@@ -208,7 +202,16 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 
 		// maybe I need to add a tester class thas is in the main app so app.tester.send('CoreHttpRequest', ) ... app.tester.listen('CoreHttpRequest', )
 		assert(false);
-	})
+	});
+	it.skip('should make sure set modules that are requestSingletons and values have a setScope === to scope',function(){
+		// run a couple of request that have a timeout that after x time uses the injector to get $request and make sure it is different
+	});
+	it.skip('should handle errors consistently between in-process / http', function(){
+		// with http when you will call you just get a bad statusCode, I need to make sure when one service calls the
+		// other that the handling will be the same. ( I could have the outgoing messenger throw an error when it recieves a 500
+		// but I'm not sure I like that
+		assert(false);
+	});
 
 
 });
