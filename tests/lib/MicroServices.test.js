@@ -178,7 +178,7 @@ describe('lib/index', function(){
 		var startStub = injector.stub('CoreService', 'start', function(){
 			return Promise.resolve();
 		});
-		return app.startServices()
+		return app.startServices(app.services)
 			.then(function(){
 				assert(startStub.calledOnce);
 			});

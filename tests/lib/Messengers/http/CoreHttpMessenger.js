@@ -21,59 +21,31 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 		app,
 		injector,
 		coreHttpMessenger,
-		messageOptions,
-		httpBaseUrl,
-		http,
-		http2BaseUrl,
-		http2,
-		http3BaseUrl,
-		http3;
+		httpBaseUrl = 'http://localhost:3333/api/v1',
+		http2BaseUrl = 'http://localhost:3232/api/v2',
+		http3BaseUrl = 'http://127.0.0.1:3333/api/v2';
 
 	beforeEach(function () {
 		app = new MicroServices({
 			root: TEST_SERVICE_DIR,
-			environment: 'dev'
+			environment: 'http-test'
 		});
-		var loadedServices = app.loadServices([TEST_SERVICE_DIR]);
-		app.initServices(loadedServices);
-		injector = app.services['project1.service1'].injector;
-
-		return Promise
-			.all([
-				injector.get('CoreHttpMessenger'),
-				injector.get('CoreService'),
-			])
-			.spread(function (coreHttpMessengerInstance, coreService) {
-				var groupedMessages = coreService.groupMessages(coreService.messages);
-				messageOptions = groupedMessages.CoreHttpMessenger;
-				http = messageOptions.incoming.http;
-				httpBaseUrl = `http://${http.options.host}:${http.options.port}${http.options.path}`;
-				http2 = messageOptions.incoming.http2;
-				http2BaseUrl = `http://${http2.options.host}:${http2.options.port}${http2.options.path}`;
-				http3 = messageOptions.incoming.http3;
-				http3BaseUrl = `http://${http3.options.host}:${http3.options.port}${http3.options.path}`;
-				coreHttpMessenger = coreHttpMessengerInstance;
+		return app.start()
+			.then(function(){
+				injector = app.services['project1.service1'].injector;
 			});
 	});
 
 	afterEach(function(){
-		return coreHttpMessenger.stop();
+		return app.stop();
 	});
 
 	it('should successfully start the http servers and respond to http requests', function () {
 
-		return coreHttpMessenger
-			.start({
-				incoming: {
-					http: http
-				}
-			})
-			.then(function(){
-				return request({
-					url: httpBaseUrl + '/users',
-					json: true
-				})
-			})
+		return request({
+			url: httpBaseUrl + '/users',
+			json: true
+		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert(response.headers['content-type'].indexOf('application/json') > -1, 'it should return the correct content-type header');
@@ -90,34 +62,25 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			sessionId: '123456'
 		};
 
-		return coreHttpMessenger
-			.start({
-				incoming: {
-					http: http
-				}
-			})
-			.then(function(){
+		var jar = request.jar();
+		var cookie = request.cookie('session-id=' + values.sessionId);
+		jar.setCookie(cookie, httpBaseUrl);
 
-				var jar = request.jar();
-				var cookie = request.cookie('session-id=' + values.sessionId);
-				jar.setCookie(cookie, httpBaseUrl);
-
-				return request({
-					url: httpBaseUrl + '/users/create/' + values.type,
-					method: 'POST',
-					jar: jar,
-					headers: {
-						token: values.token
-					},
-					qs: {
-						id: values.id
-					},
-					body: {
-						name: values.name
-					},
-					json: true
-				})
-			})
+		return request({
+			url: httpBaseUrl + '/users/create/' + values.type,
+			method: 'POST',
+			jar: jar,
+			headers: {
+				token: values.token
+			},
+			qs: {
+				id: values.id
+			},
+			body: {
+				name: values.name
+			},
+			json: true
+		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert.deepEqual(result, values, 'it should have got all the values');
@@ -129,27 +92,16 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 
 		var jar = request.jar();
 
-		return coreHttpMessenger
-			.start({
-				incoming: {
-					http: http
-				}
-			})
-			.then(function(){
-
-
-
-				return request({
-					url: httpBaseUrl + '/users/login',
-					method: 'POST',
-					jar: jar,
-					body: {
-						username:'test@test.com',
-						password:'1234'
-					},
-					json: true
-				})
-			})
+		return request({
+			url: httpBaseUrl + '/users/login',
+			method: 'POST',
+			jar: jar,
+			body: {
+				username:'test@test.com',
+				password:'1234'
+			},
+			json: true
+		})
 			.spread(function(response, result){
 				var cookies = jar.getCookies(httpBaseUrl);
 				var usernameCookie = _.find(cookies, {key:'username'});
@@ -172,31 +124,21 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 	});
 
 	it('should reuse the server port when multiple domains are used on same port and run servers on different ports', function(){
-		return coreHttpMessenger
-			.start({
-				incoming: {
-					http: http,
-					http2: http2,
-					http3: http3
-				}
-			})
-			.then(function(){
-				return Promise
-					.all([
-						request({
-							url: httpBaseUrl + '/users',
-							json: true
-						}),
-						request({
-							url: http2BaseUrl + '/users',
-							json: true
-						}),
-						request({
-							url: http3BaseUrl + '/users',
-							json: true
-						})
-					])
-			})
+		return Promise
+			.all([
+				request({
+					url: httpBaseUrl + '/users',
+					json: true
+				}),
+				request({
+					url: http2BaseUrl + '/users',
+					json: true
+				}),
+				request({
+					url: http3BaseUrl + '/users',
+					json: true
+				})
+			])
 			.then(function(results){
 
 				assert.equal(results.length, 3);
@@ -213,18 +155,10 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 	});
 
 	it('should communicate with an another service using http if no inProc service is specified', function(){
-		return coreHttpMessenger
-			.start({
-				incoming: {
-					http: http
-				}
-			})
-			.then(function(){
-				return request({
-					url: httpBaseUrl + '/getRemoteUsers',
-					json: true
-				})
-			})
+		return request({
+			url: httpBaseUrl + '/getRemoteUsers',
+			json: true
+		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert.isArray(result.users, 'It should return the list of users');
@@ -232,18 +166,10 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 	});
 
 	it('should communicate with an another service using http and reverse match the url params', function(){
-		return coreHttpMessenger
-			.start({
-				incoming: {
-					http: http
-				}
-			})
-			.then(function(){
-				return request({
-					url: httpBaseUrl + '/createRemoteUser',
-					json: true
-				})
-			})
+		return request({
+			url: httpBaseUrl + '/createRemoteUser',
+			json: true
+		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
 				assert.deepEqual(result, {
@@ -256,8 +182,15 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			});
 	});
 
-	it('should communicate with an another service using inProc is a service is specified', function(){
-
+	it('should communicate with an another service using inProc if a service is specified', function(){
+		return request({
+			url: httpBaseUrl + '/getRemoteUsersInProc',
+			json: true
+		})
+			.spread(function(response, result){
+				assert.equal(response.statusCode, 200);
+				assert(result.users.length > 0);
+			});
 	});
 
 	it.skip('should cleanly run the tests', function(){

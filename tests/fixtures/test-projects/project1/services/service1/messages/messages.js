@@ -90,10 +90,10 @@ module.exports = {
 			url: 'http://localhost:3333/api/v1/users'
 		},
 		'getUsersInProc': {
-			service: 'service1',
+			target: 'project1.service1/getUsers',
+			url: 'http://localhost:3333/api/v1/users/getUsers',
 			type: 'http',
-			method: 'GET',
-			match: 'http://localhost:3333/api/v1/users'
+			method: 'GET'
 		}
 	},
 	types: {
@@ -135,7 +135,6 @@ module.exports = {
 			},
 			// we can have a preset for a specific service so only the path needs to be set in each message
 			service1Http: {
-				service: 'service1',
 				messenger: 'CoreHttpMessenger',
 				options: {
 					url: 'http://localhost:4444/api'

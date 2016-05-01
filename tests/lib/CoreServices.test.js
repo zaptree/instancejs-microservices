@@ -23,8 +23,7 @@ describe('lib/CoreService', function(){
 			root: TEST_SERVICE_DIR,
 			environment: 'dev'
 		});
-		var loadedServices = app.loadServices([TEST_SERVICE_DIR]);
-		app.initServices(loadedServices);
+		app.initialize();
 		injector = app.services['project1.service1'].injector;
 
 		return injector.get('CoreService')

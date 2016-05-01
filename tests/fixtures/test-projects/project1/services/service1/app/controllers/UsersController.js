@@ -109,7 +109,7 @@ class UsersController extends include('BaseController'){
 
 		return this.messenger.send('getUsersInProc')
 			.then(function(users){
-				return users;
+				return users.body;
 			})
 
 	}
