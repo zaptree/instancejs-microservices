@@ -97,21 +97,20 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 		var jar = request.jar();
 
 		return request({
-			url: httpBaseUrl + '/users/login',
+			url: httpBaseUrl + '/postDataWithSet',
 			method: 'POST',
 			jar: jar,
 			body: {
-				username:'test@test.com',
-				password:'1234'
+				name:'nick'
 			},
 			json: true
 		})
 			.spread(function(response, result){
 				var cookies = jar.getCookies(httpBaseUrl);
-				var usernameCookie = _.find(cookies, {key:'username'});
+				var nameCookie = _.find(cookies, {key:'name'});
 
 				assert.equal(response.statusCode, 401);
-				assert.equal(_.get(usernameCookie, 'value'), 'test@test.com', 'it should return the username cookie');
+				assert.equal(_.get(nameCookie, 'value'), 'nick', 'it should return the name cookie');
 				assert.equal(response.headers['content-type'], 'application/xml', 'it should have the properly set content-type header');
 			});
 
@@ -121,15 +120,24 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 		return Promise
 			.all([
 				request({
-					url: httpBaseUrl + '/users',
+					url: httpBaseUrl + '/getData',
+					body: {
+						source: 1
+					},
 					json: true
 				}),
 				request({
-					url: http2BaseUrl + '/users',
+					url: http2BaseUrl + '/getData2',
+					body: {
+						source: 2
+					},
 					json: true
 				}),
 				request({
-					url: http3BaseUrl + '/users',
+					url: http3BaseUrl + '/getData3',
+					body: {
+						source: 3
+					},
 					json: true
 				})
 			])
@@ -139,51 +147,93 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				_.each(results, function(res, i){
 					var response = res[0];
 					var result = res[1];
-					assert.equal(result.version, i + 1);
+					assert.equal(result.message.body.source, i + 1);
 					assert.equal(response.statusCode, 200);
 					assert(response.headers['content-type'].indexOf('application/json') > -1, 'it should return the correct content-type header');
-					assert.isArray(result.users, 'It should return the list of users');
 				});
 
 			});
 	});
 
-	it('should communicate with an another service using http if no inProc service is specified', function(){
+	it('should communicate with an another service using http if no inProc service is specified and reverse match the url params', function(){
 		return request({
-			url: httpBaseUrl + '/getRemoteUsers',
-			json: true
+			url: httpBaseUrl + '/getRemote',
+			method: 'POST',
+			json: {
+				messageKey: 'sendData',
+				messageBody: {
+					params: {
+						type: 'proxy'
+					}
+				}
+			}
 		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
-				assert.isArray(result.users, 'It should return the list of users');
-			});
-	});
-
-	it('should communicate with an another service using http and reverse match the url params', function(){
-		return request({
-			url: httpBaseUrl + '/createRemoteUser',
-			json: true
-		})
-			.spread(function(response, result){
-				assert.equal(response.statusCode, 200);
-				assert.deepEqual(result, {
-					"name": "john",
-					"type": "admin",
-					"id": "15",
-					"token": "token",
-					"sessionId": "123456"
-				});
+				var remoteResponse = result;
+				assert.equal(remoteResponse.statusCode, 200);
+				assert.equal(remoteResponse.source, 'remote');
+				assert.equal(remoteResponse.cookies.name, 'get-data');
+				assert.equal(remoteResponse.body.message.params.type, 'proxy');
 			});
 	});
 
 	it('should communicate with an another service using inProc if a service is specified', function(){
 		return request({
-			url: httpBaseUrl + '/getRemoteUsersInProc',
-			json: true
+			url: httpBaseUrl + '/getRemote',
+			method: 'POST',
+			json: {
+				messageKey: 'sendDataInProc',
+				messageBody: {
+					params: {
+						type: 'proxy'
+					}
+				}
+			}
 		})
 			.spread(function(response, result){
 				assert.equal(response.statusCode, 200);
-				assert(result.users.length > 0);
+				var remoteResponse = result;
+				assert.equal(remoteResponse.statusCode, 200);
+				assert.equal(remoteResponse.source, 'remote');
+				assert.equal(remoteResponse.cookies.name, 'get-data');
+				assert.equal(remoteResponse.body.message.params.type, 'proxy');
+			});
+	});
+
+
+	it('should handle throwing an error remotely the same inProc and http', function(){
+		var messageBody = {
+			url: httpBaseUrl + '/getRemote',
+			method: 'POST',
+			json: {
+				messageKey: 'sendData',
+				messageBody: {
+					body: {
+						throws: true
+					},
+					params: {
+						type: 'proxy'
+					}
+				}
+			}
+		};
+		var messageBody2 = _.cloneDeep(messageBody);
+		messageBody2.json.messageKey = 'sendDataInProc';
+		return Promise
+			.all([
+				request(messageBody),
+				request(messageBody2)
+			])
+			.then(function(responses){
+				assert.equal(responses.length, 2);
+				_.each(responses,function(res){
+					var response = res[0]
+					var result = res[1];
+					assert.equal(response.statusCode, 200);
+					var remoteResponse = result;
+					assert.equal(remoteResponse.statusCode, 500);
+				});
 			});
 	});
 
@@ -194,6 +244,10 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			.spread(function(response,result){
 				assert.equal(result.trim(), 'static file');
 			});
+	});
+
+	it.skip('should not start any servers when using the inProcOnly option', function(){
+		assert(false);
 	});
 
 	it.skip('should cleanly run the tests', function(){

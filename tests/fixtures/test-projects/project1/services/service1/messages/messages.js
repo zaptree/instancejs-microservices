@@ -7,98 +7,57 @@ module.exports = {
 			action: 'UsersController.getData',
 			match: '/getData/(:type)'
 		},
-		'getUsers': {
-			type: 'http',
-			action: 'UsersController.getUsers',
-			method: 'GET',
-			match: '/users'
-		},
-		'getRemoteUsers': {
-			type: 'http',
-			action: 'UsersController.getRemoteUsers',
-			method: 'GET',
-			match: '/getRemoteUsers'
-		},
-		'createRemoteUser': {
-			type: 'http',
-			action: 'UsersController.createRemoteUser',
-			method: 'GET',
-			match: '/createRemoteUser'
-		},
-		'getRemoteUsersInProc': {
-			type: 'http',
-			action: 'UsersController.getRemoteUsersInProc',
-			method: 'GET',
-			match: '/getRemoteUsersInProc'
-		},
-		'getUsers2': {
+		'getData2': {
 			type: 'http2',
-			action: 'UsersController.getUsers2',
-			method: 'GET',
-			match: '/users'
+			action: 'UsersController.getData',
+			match: '/getData2/(:type)'
 		},
-		'getUsers3': {
+		'getData3': {
 			type: 'http3',
-			action: 'UsersController.getUsers3',
-			method: 'GET',
-			match: '/users'
+			action: 'UsersController.getData',
+			match: '/getData3/(:type)'
 		},
-		'createUser': {
+		'postDataWithSet': {
 			type:'http',
-			action: 'UsersController.createUser',
+			action: 'UsersController.postDataWithSet',
 			method: 'POST',
-			match: '/users/create/:type',
-			query: {
-				id: true
-			}
+			match: '/postDataWithSet'
 		},
-		'loginUser': {
+		'getRemote': {
 			type:'http',
-			action: 'UsersController.loginUser',
+			action: 'UsersController.getRemote',
 			method: 'POST',
-			match: '/users/login'
+			match: '/getRemote'
 		},
-		'example': {
-			// filters will be classes that work like middleware with hooks for things like before and after and so on
-			filters: [
-				{
-					name: 'auth',
-					options: {
-						whatever: 'hello'
-					}
-				}
-			],
-			// for the schema I will have mode = strict/loose/filter and should allow that on every level so that I can override for http headers and such
-			// or maybe I pass the schema through http.schemaTransform that adds headers and such stuff. Then I have a schema for each type or just merge all transforms
-			schema: 'filename/property.lodash.gettable',
-			responseSchema: 'xxx',
-			type: 'http',
-			action: 'WhateverController.ActionWhatever',
-			method: 'GET',
-			match: '/whatever/:id'
-		}
+		//'example': {
+		//	// filters will be classes that work like middleware with hooks for things like before and after and so on
+		//	filters: [
+		//		{
+		//			name: 'auth',
+		//			options: {
+		//				whatever: 'hello'
+		//			}
+		//		}
+		//	],
+		//	// for the schema I will have mode = strict/loose/filter and should allow that on every level so that I can override for http headers and such
+		//	// or maybe I pass the schema through http.schemaTransform that adds headers and such stuff. Then I have a schema for each type or just merge all transforms
+		//	schema: 'filename/property.lodash.gettable',
+		//	responseSchema: 'xxx',
+		//	type: 'http',
+		//	action: 'WhateverController.ActionWhatever',
+		//	method: 'GET',
+		//	match: '/whatever/:id'
+		//}
 	},
 	outgoing: {
-		// the key must be name of service/incoming message name, I should automatically use in-memory communication if the service is available
-		// also I need to make sure that I don't allow / in service names (and require that services have names)
-		'createUser': {
+		'sendData': {
 			type: 'http',
-			method: 'POST',
-			url: 'http://localhost:3333/api/v1/users/create/:type',
-			query: {
-				id: true
-			}
+			url: 'http://localhost:3333/api/v1/getData/:type',
 		},
-		'getUsers': {
+		'sendDataInProc': {
 			type: 'http',
-			method: 'GET',
-			url: 'http://localhost:3333/api/v1/users'
-		},
-		'getUsersInProc': {
-			target: 'project1.service1/getUsers',
-			url: 'http://localhost:3333/api/v1/users/getUsers',
-			type: 'http',
-			method: 'GET'
+			target: 'project1.service1/getData',
+			url: 'http://localhost:3333/api/v1/getData/:type',
 		}
 	},
 	types: {
@@ -140,13 +99,6 @@ module.exports = {
 			http: {
 				messenger: 'CoreHttpMessenger',
 				url: ''
-			},
-			// we can have a preset for a specific service so only the path needs to be set in each message
-			service1Http: {
-				messenger: 'CoreHttpMessenger',
-				options: {
-					url: 'http://localhost:4444/api'
-				}
 			}
 		}
 
