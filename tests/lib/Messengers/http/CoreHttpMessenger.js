@@ -279,8 +279,20 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 					assert.equal(httpStartStub.callCount, 0);
 				})
 				.then(function(){
-					// TODO: I need to implement actually sending a request... how do I do this ( a helper maybe? )
-					assert(false);
+					var tester = app.tester.get('project1.service1');
+					return tester.send('getData', {
+						params: {
+							type: 'test'
+						},
+						body: {
+							name: 'john'
+						}
+					});
+				})
+				.then(function(result){
+					assert.equal(result.statusCode, 200);
+					assert.equal(result.body.message.params.type, 'test');
+					assert.equal(result.body.message.body.name, 'john');
 				})
 				.finally(function(){
 					app.stop();
