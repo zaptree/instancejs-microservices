@@ -258,7 +258,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 	});
 
 	describe('inProcOnly tests', function(){
-		it.only('should not start any servers when using the inProcOnly option', function(){
+		it('should not start any servers when using the inProcOnly option', function(){
 			var app = new MicroServices({
 				root: TEST_SERVICE_DIR,
 				config: {

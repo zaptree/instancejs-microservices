@@ -1,6 +1,6 @@
 'use strict';
 
-class UsersController extends include('BaseController'){
+class TestController extends include('BaseController'){
 	constructor($messenger){
 		super();
 		this.messenger = $messenger;
@@ -32,4 +32,4 @@ class UsersController extends include('BaseController'){
 	}
 }
 
-module.exports = UsersController;
+module.exports = TestController;

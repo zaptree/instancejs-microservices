@@ -4,30 +4,35 @@ module.exports = {
 	incoming: {
 		'getData': {
 			type: 'http',
-			action: 'UsersController.getData',
+			action: 'TestController.getData',
 			match: '/getData/(:type)'
 		},
 		'getData2': {
 			type: 'http2',
-			action: 'UsersController.getData',
+			action: 'TestController.getData',
 			match: '/getData2/(:type)'
 		},
 		'getData3': {
 			type: 'http3',
-			action: 'UsersController.getData',
+			action: 'TestController.getData',
 			match: '/getData3/(:type)'
 		},
 		'postDataWithSet': {
 			type:'http',
-			action: 'UsersController.postDataWithSet',
+			action: 'TestController.postDataWithSet',
 			method: 'POST',
 			match: '/postDataWithSet'
 		},
 		'getRemote': {
 			type:'http',
-			action: 'UsersController.getRemote',
+			action: 'TestController.getRemote',
 			method: 'POST',
 			match: '/getRemote'
+		},
+		'notExtendedGetData': {
+			type: 'http',
+			action: 'NotExtendingController.getData',
+			match: '/getData/(:type)'
 		},
 		//'example': {
 		//	// filters will be classes that work like middleware with hooks for things like before and after and so on
