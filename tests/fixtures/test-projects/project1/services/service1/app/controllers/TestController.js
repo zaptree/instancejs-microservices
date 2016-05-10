@@ -30,6 +30,12 @@ class TestController extends include('BaseController'){
 				return response;
 			})
 	}
+	*generatorMethod(message){
+		var result = yield Promise.resolve({msg: 'hello world'});
+		return {
+			msg: result.msg
+		};
+    }
 }
 
 module.exports = TestController;

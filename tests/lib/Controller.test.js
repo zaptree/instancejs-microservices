@@ -106,4 +106,15 @@ describe('lib/CoreService', function(){
 			})
 	});
 
+	describe('factory', function(){
+		it('should wrap generator methods', function(){
+			return tester
+				.send('generatorMethod')
+				.then(function(result){
+					assert.equal(result.statusCode, 200);
+					assert.equal(result.body.msg, 'hello world');
+				});
+		});
+	});
+
 });

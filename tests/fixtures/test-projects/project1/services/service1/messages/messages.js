@@ -34,6 +34,11 @@ module.exports = {
 			action: 'NotExtendingController.getData',
 			match: '/getData/(:type)'
 		},
+		'generatorMethod': {
+			type: 'http',
+			action: 'TestController.generatorMethod',
+			match: '/generatorMethod'
+		},
 		//'example': {
 		//	// filters will be classes that work like middleware with hooks for things like before and after and so on
 		//	filters: [
