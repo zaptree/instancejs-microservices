@@ -11,7 +11,7 @@ var Path = require('path');
 // project modules
 var MicroServices = require('../../lib/MicroServices');
 
-describe('lib/CoreService', function(){
+describe('lib/Controller', function(){
 
 	var app,
 		tester;

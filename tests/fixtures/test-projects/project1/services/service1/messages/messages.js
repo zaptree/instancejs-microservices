@@ -39,6 +39,11 @@ module.exports = {
 			action: 'TestController.generatorMethod',
 			match: '/generatorMethod'
 		},
+		'switch': {
+			type: 'http',
+			action: 'TestController.switch',
+			match: '/switch'
+		},
 		//'example': {
 		//	// filters will be classes that work like middleware with hooks for things like before and after and so on
 		//	filters: [

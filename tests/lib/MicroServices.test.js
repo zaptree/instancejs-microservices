@@ -11,7 +11,7 @@ var Path = require('path');
 // project modules
 var MicroServices = require('../../lib/MicroServices');
 
-describe('lib/index', function(){
+describe('lib/MicroServices', function(){
 
 	var TEST_PROJECTS_DIR = Path.join(__dirname, '../fixtures/test-projects'),
 		app;

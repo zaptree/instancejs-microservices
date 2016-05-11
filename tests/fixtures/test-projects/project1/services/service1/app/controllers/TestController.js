@@ -1,9 +1,27 @@
 'use strict';
 
+var Promise = require('bluebird');
+
 class TestController extends include('BaseController'){
+	get components(){
+		return {
+			testComponent: {
+				component: 'TestComponent',
+				options: {
+					switchMethod: 'switched'
+				}
+			}
+		}
+	}
 	constructor($messenger){
 		super();
-		this.messenger = $messenger;
+		// make sure promise based constructor works
+		return Promise.resolve()
+			.then(()=>{
+				this.messenger = $messenger;
+			})
+			// you must not forget to return this
+			.return(this);
 	}
 
 	getData(message){
@@ -36,6 +54,11 @@ class TestController extends include('BaseController'){
 			msg: result.msg
 		};
     }
+	switched(message){
+		return {
+			woot: 'hello'
+		}
+	}
 }
 
 module.exports = TestController;

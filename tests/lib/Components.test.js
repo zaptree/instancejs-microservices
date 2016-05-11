@@ -11,7 +11,7 @@ var Path = require('path');
 // project modules
 var MicroServices = require('../../lib/MicroServices');
 
-describe('Di Integration', function(){
+describe('lib/CoreService', function(){
 
 	var app,
 		tester;
@@ -33,18 +33,17 @@ describe('Di Integration', function(){
 		return app.stop();
 	});
 
-	it.skip('should test that the controllers are requestSingletons', function(){
-		// also test that messengers are serviceSingletons
-		// also test CoreService
-		// also test a plain class that is the defaultFactory
-		// also test GlovalWhatever
-		//todo: this should probably go in a test file on it's own that tests injector integration
-		assert(false);
-		//return test
-		//	.send('getData', {
-		//
-		//	})
-		//	.then(function(result){})
+	it.only('it should call the controller action', function(){
+
+		return tester
+			.send('switch', {
+				body: {
+					name: 'john'
+				}
+			})
+			.then(function (result) {
+				assert.equal(result.body.message.body.name, 'john');
+			});
 	});
 
 });
