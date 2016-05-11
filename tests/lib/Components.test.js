@@ -33,7 +33,7 @@ describe('lib/CoreService', function(){
 		return app.stop();
 	});
 
-	it.only('it should call the controller action', function(){
+	it('it should attach the component and add the decorators', function(){
 
 		return tester
 			.send('switch', {
