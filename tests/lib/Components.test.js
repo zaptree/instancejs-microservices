@@ -42,7 +42,9 @@ describe('lib/CoreService', function(){
 				}
 			})
 			.then(function (result) {
-				assert.equal(result.body.message.body.name, 'john');
+				assert.equal(result.body.location, 'switched');
+				assert.equal(result.body.extra, 'augmented');
+				assert.equal(result.body.ranFirst, 'switch');
 			});
 	});
 

@@ -56,7 +56,7 @@ class TestController extends include('BaseController'){
     }
 	switched(message){
 		return {
-			woot: 'hello'
+			location: 'switched'
 		}
 	}
 }
