@@ -2,8 +2,7 @@
 
 // modules
 var assert = require('chai').assert,
-	Promise = require('bluebird'),
-	_ = require('lodash');
+	Promise = require('bluebird');
 
 // core modules
 var Path = require('path');
@@ -103,7 +102,7 @@ describe('lib/Controller', function(){
 				assert.equal(result.statusCode, 200);
 				assert.equal(result.body.message.body.name, 'alex');
 				assert.equal(result.body.source, 'NotExtendingController');
-			})
+			});
 	});
 
 	describe('factory', function(){

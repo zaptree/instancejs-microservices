@@ -7,7 +7,7 @@ class TestComponent {
 	get decorators(){
 		return {
 			handleAction: ['switch', 'augment']
-		}
+		};
 	}
 	switch(func){
 		// original function get's replaced with whatever we return here
@@ -22,8 +22,8 @@ class TestComponent {
 						res.ranFirst = 'switch';
 					}
 					return res;
-				})
-		}
+				});
+		};
 	}
 	augment(func){
 		// original function get's replaced with whatever we return here
@@ -36,7 +36,7 @@ class TestComponent {
 					}
 					return res;
 				});
-		}
+		};
 	}
 	constructor(){
 

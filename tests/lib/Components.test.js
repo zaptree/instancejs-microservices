@@ -1,9 +1,7 @@
 'use strict';
 
 // modules
-var assert = require('chai').assert,
-	Promise = require('bluebird'),
-	_ = require('lodash');
+var assert = require('chai').assert;
 
 // core modules
 var Path = require('path');

@@ -11,7 +11,7 @@ class TestController extends include('BaseController'){
 					switchMethod: 'switched'
 				}
 			}
-		}
+		};
 	}
 	constructor($messenger){
 		super();
@@ -46,18 +46,18 @@ class TestController extends include('BaseController'){
 			.then(function(response){
 				response.source = 'remote';
 				return response;
-			})
+			});
 	}
-	*generatorMethod(message){
+	*generatorMethod(){
 		var result = yield Promise.resolve({msg: 'hello world'});
 		return {
 			msg: result.msg
 		};
     }
-	switched(message){
+	switched(){
 		return {
 			location: 'switched'
-		}
+		};
 	}
 }
 

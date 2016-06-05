@@ -107,7 +107,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				},
 				json: true
 			})
-				.spread(function(response, result){
+				.spread(function(response){
 					var cookies = jar.getCookies(httpBaseUrl);
 					var nameCookie = _.find(cookies, {key:'name'});
 
@@ -237,7 +237,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				.then(function(responses){
 					assert.equal(responses.length, 2);
 					_.each(responses,function(res){
-						var response = res[0]
+						var response = res[0];
 						var result = res[1];
 						assert.equal(response.statusCode, 200);
 						var remoteResponse = result;

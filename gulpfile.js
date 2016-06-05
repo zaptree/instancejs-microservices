@@ -6,8 +6,9 @@ var istanbul = require('gulp-istanbul');
 var jshint = require('gulp-jshint');
 
 var folders = {
-	test: ['lib/**/*.js', 'index.js'],
-	lint: ['lib/**/*.js', 'tests/lib/**/*.js', 'index.js']
+	istanbul: ['lib/**/*.js', 'index.js'],
+	test: ['./tests/**/*.test.js'],
+	lint: ['lib/**/*.js', 'tests/**/*.js', 'index.js']
 };
 
 gulp.task('test', ['lint'], function () {
@@ -15,8 +16,7 @@ gulp.task('test', ['lint'], function () {
 		.pipe(istanbul()) // Covering files
 		.pipe(istanbul.hookRequire()) // Force `require` to return covered files
 		.on('finish', function () {
-			// this does not include subfolders so fixtures wont be considered test folder
-			gulp.src(['./tests/*.test.js'], {read: false})
+			gulp.src(folders.test, {read: false})
 				.pipe(mocha())
 				.pipe(istanbul.writeReports()) // Creating the reports after tests ran
 				.pipe(istanbul.enforceThresholds({thresholds: {global: 100}})); // Enforce a coverage of at least 100%

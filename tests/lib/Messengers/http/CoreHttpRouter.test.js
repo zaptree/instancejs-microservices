@@ -1,16 +1,12 @@
 'use strict';
 
 // modules
-var Request = require('request'),
-	assert = require('chai').assert,
+var assert = require('chai').assert,
 	Promise = require('bluebird'),
 	_ = require('lodash');
 
 // core modules
 var Path = require('path');
-
-Promise.promisifyAll(Request);
-var request = Promise.promisify(Request);
 
 
 // project modules

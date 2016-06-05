@@ -5,7 +5,7 @@ class NotExtendingController{
 		return {
 			source: 'NotExtendingController',
 			message: message
-		}
+		};
 	}
 }
 
