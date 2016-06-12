@@ -44,6 +44,12 @@ module.exports = {
 			action: 'TestController.switch',
 			match: '/switch'
 		},
+		'createArticle': {
+			type: 'http',
+			action: 'TestController.getData',
+			match: '/createArticle/(:id)',
+			schema: 'article'
+		}
 		//'example': {
 		//	// filters will be classes that work like middleware with hooks for things like before and after and so on
 		//	filters: [
@@ -73,6 +79,12 @@ module.exports = {
 			type: 'http',
 			target: 'project1.service1/getData',
 			url: 'http://localhost:3333/api/v1/getData/:type',
+		},
+		'createUser': {
+			type: 'http',
+			target: 'project1.service1/getData',
+			url: 'http://localhost:3333/api/v1/getData/:type',
+			schema: 'user'
 		}
 	},
 	types: {
