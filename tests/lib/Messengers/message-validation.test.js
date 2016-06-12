@@ -45,21 +45,33 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			});
 	});
 
-	it.only('it should properly filter out values in the message that are not part of the schema', function(){
-		return tester
-			.send('getData', {
-				params: {
-					type: 'test'
-				},
-				body: {
-					name: 'john'
-				}
-			})
+	it('it should properly filter out values in the message that are not part of the schema for incoming requests', function(){
+		var requestMessage = {
+			params: {
+				id: 12
+			},
+			body: {
+				title: 'hello',
+				text: 'world',
+				random: 'should not be here'
+			}
+		};
+		return tester.send('createArticle', requestMessage)
 			.then(function (result) {
+				var message = result.body.message;
 				assert.equal(result.statusCode, 200);
-				assert(false, 'NOT IMPLEMENTED');
+				assert.deepEqual(_.omit(requestMessage.body, 'random'), message.body);
+				assert.isUndefined(message.body.random);
 			});
 	});
+
+	it.only('it should properly filter out values in the message that are not part of the schema for outgoing requests', function(){
+		assert(false, 'not implemented');
+	});
+
+	it('should return an error when making an invalid request', function(){
+		assert(false, 'not implmenetd');
+	})
 
 
 
