@@ -65,6 +65,28 @@ describe('message-validation', function () {
 			});
 	});
 
+	it('it should properly filter out values in the message that are not part of the schema for out responses', function(){
+		var requestMessage = {
+			params: {
+				id: 12
+			},
+			body: {
+				respondWith:{
+					name: 'john',
+					email: 'test@test.com',
+					random: 'should not be here'
+				}
+			}
+		};
+		return tester.send('createUser', requestMessage)
+			.then(function (result) {
+				var response = result.body;
+				assert.equal(result.statusCode, 200);
+				assert.deepEqual(_.omit(requestMessage.body.respondWith, 'random'), response);
+				assert.isUndefined(response.random);
+			});
+	});
+
 
 	it('it should properly filter out values in the message that are not part of the schema for outgoing requests when doing inProc', function(){
 		var requestMessage = {

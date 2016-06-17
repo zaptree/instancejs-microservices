@@ -49,6 +49,12 @@ module.exports = {
 			action: 'TestController.getData',
 			match: '/createArticle/(:id)',
 			schema: 'article'
+		},
+		'createUser': {
+			type: 'http',
+			action: 'TestController.getData',
+			match: '/createArticle/(:id)',
+			responseSchema: 'user'
 		}
 		//'example': {
 		//	// filters will be classes that work like middleware with hooks for things like before and after and so on

@@ -29,7 +29,7 @@ class TestController extends include('BaseController'){
 			throw new Error('getData forced error');
 		}
 		this.messenger.response.set('cookies', 'name', 'get-data');
-		return {
+		return message.body.respondWith || {
 			message: message
 		};
 	}
