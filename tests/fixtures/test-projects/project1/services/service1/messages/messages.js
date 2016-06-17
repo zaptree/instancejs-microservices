@@ -85,6 +85,11 @@ module.exports = {
 			target: 'project1.service1/getData',
 			url: 'http://localhost:3333/api/v1/getData/:type',
 			schema: 'user'
+		},
+		'createUserNoInProc': {
+			type: 'http',
+			url: 'http://localhost:3333/api/v1/getData/:type',
+			schema: 'user'
 		}
 	},
 	types: {
