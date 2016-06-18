@@ -2,7 +2,6 @@
 
 // modules
 var assert = require('chai').assert,
-	Promise = require('bluebird'),
 	_ = require('lodash');
 
 // core modules
@@ -170,7 +169,7 @@ describe('message-validation', function () {
 
 
 
-	})
+	});
 
 
 

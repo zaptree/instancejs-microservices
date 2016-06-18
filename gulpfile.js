@@ -3,23 +3,34 @@
 var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
+var microservicesInstabul = require('./microservicesIstanbul')
 var jshint = require('gulp-jshint');
 
 var folders = {
-	istanbul: ['lib/**/*.js', 'index.js'],
+	istanbul: ['./lib/**/*.js', 'index.js'],
 	test: ['./tests/**/*.test.js'],
 	lint: ['lib/**/*.js', 'tests/**/*.js', 'index.js']
 };
 
+
+
 gulp.task('test', ['lint'], function () {
-	return gulp.src(folders.test)
-		.pipe(istanbul()) // Covering files
-		.pipe(istanbul.hookRequire()) // Force `require` to return covered files
+
+	var istanbulOptions = {
+		coverageVariable: '$$cov_' + new Date().getTime() + '$$',
+		thresholds: {global: 100}
+	};
+	return gulp.src(folders.istanbul)
+		.pipe(istanbul(istanbulOptions)) // Covering files
+		.pipe(microservicesInstabul(istanbulOptions))
+		//.pipe(istanbul.hookRunInThisContext(istanbulOptions))
+		.pipe(istanbul.hookRequire(istanbulOptions)) // Force `require` to return covered files
 		.on('finish', function () {
+			// this does not include subfolders so fixtures wont be considered test folder
 			gulp.src(folders.test, {read: false})
 				.pipe(mocha())
-				.pipe(istanbul.writeReports()) // Creating the reports after tests ran
-				.pipe(istanbul.enforceThresholds({thresholds: {global: 100}})); // Enforce a coverage of at least 100%
+				.pipe(istanbul.writeReports(istanbulOptions)) // Creating the reports after tests ran
+				.pipe(istanbul.enforceThresholds(istanbulOptions)); // Enforce a coverage of at least 100%
 		});
 
 });
