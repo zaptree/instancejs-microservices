@@ -37,8 +37,9 @@ describe('message-validation', function () {
 	});
 
 	it('should load schemas', function(){
-		return tester.injector.get('$schemas')
-			.then(function(schemas){
+		return tester.injector.get('CoreSchemaValidator')
+			.then(function(schemaValidator){
+				var schemas = schemaValidator.schemas;
 				assert.deepEqual(articleSchemaOptions, schemas.article.schema);
 				assert.deepEqual(userSchemaOptions, schemas.user.schema);
 			});

@@ -172,6 +172,7 @@ describe('lib/MicroServices', function(){
 		];
 
 		var loadedServices = app.loadServices(services);
+		app.injector.value('$services', loadedServices);
 		app.initServices(loadedServices);
 		var service = app.services[projectName];
 		var injector = service.injector;

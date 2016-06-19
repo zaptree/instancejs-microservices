@@ -36,19 +36,12 @@ describe('lib/CoreService', function(){
 		assert.isObject(coreService);
 	});
 
-	it('should group messages in logical groups for their easier consumption from the messenger objects', function(){
-		var groupedMessages = coreService.groupMessages(coreService.messages);
-		assert.equal(_.get(groupedMessages, 'CoreHttpMessenger.incoming.http.messenger'), 'CoreHttpMessenger');
-		assert(_.keys(_.get(groupedMessages, 'CoreHttpMessenger.incoming.http.messages')).length > 0);
-		assert.equal(_.get(groupedMessages, 'CoreHttpMessenger.outgoing.http.messenger'), 'CoreHttpMessenger');
-		assert(_.keys(_.get(groupedMessages, 'CoreHttpMessenger.outgoing.http.messages')).length > 0);
-	});
 
 	it('should create an instance of each messenger and pass in the corresponding messages/options', function(){
-		var groupedMessages = coreService.groupMessages(coreService.messages);
+		var groupedMessages = coreService.broker.groupMessages(coreService.broker.messages);
 
 		var stubs = stubMessengers();
-		return coreService.start(groupedMessages.CoreHttpMessenger, 'CoreHttpMessenger')
+		return coreService.start()
 			.then(function(){
 				assert(stubs.CoreHttpMessenger.start.calledOnce, 'it should call the start method on the CoreHttpMessenger class');
 				assert(stubs.CoreHttpMessenger.start.calledWith(groupedMessages.CoreHttpMessenger), 'it should call the start method on the CoreHttpMessenger class');
