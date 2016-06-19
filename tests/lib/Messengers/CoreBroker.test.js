@@ -10,7 +10,7 @@ var Path = require('path');
 // project modules
 var MicroServices = require('../../../lib/MicroServices');
 
-describe('CoreMessenger', function () {
+describe('CoreBroker', function () {
 	var TEST_SERVICE_DIR = Path.join(__dirname, '../../fixtures/test-projects/project1/services/service1'),
 		tester,
 		app;

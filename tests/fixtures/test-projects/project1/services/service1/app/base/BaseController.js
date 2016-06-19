@@ -1,6 +1,6 @@
 'use strict';
 
-class BaseController extends include('CoreBaseController'){
+class BaseController extends include('CoreController'){
 
 }
 

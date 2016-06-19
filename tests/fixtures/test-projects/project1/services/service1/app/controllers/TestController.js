@@ -13,13 +13,13 @@ class TestController extends include('BaseController'){
 			}
 		};
 	}
-	constructor($messenger, CoreLogger){
+	constructor($broker, CoreLogger){
 		super();
 		this.logger = CoreLogger;
 		// make sure promise based constructor works
 		return Promise.resolve()
 			.then(()=>{
-				this.messenger = $messenger;
+				this.broker = $broker;
 			})
 			// you must not forget to return this
 			.return(this);
@@ -29,16 +29,16 @@ class TestController extends include('BaseController'){
 		if(message.body.throws){
 			throw new Error('getData forced error');
 		}
-		this.messenger.response.set('cookies', 'name', 'get-data');
+		this.broker.response.set('cookies', 'name', 'get-data');
 		return message.body.respondWith || {
 			message: message
 		};
 	}
 
 	postDataWithSet(message){
-		this.messenger.response.set('headers', 'Content-Type', 'application/xml');
-		this.messenger.response.set('cookies', 'name', message.body.name);
-		this.messenger.response.set('statusCode', 401);
+		this.broker.response.set('headers', 'Content-Type', 'application/xml');
+		this.broker.response.set('cookies', 'name', message.body.name);
+		this.broker.response.set('statusCode', 401);
 		return '<Response><name>'+ message.body.name +'</name></Response>';
 	}
 
@@ -57,7 +57,7 @@ class TestController extends include('BaseController'){
 	}
 
 	getRemote(message){
-		return this.messenger.send(message.body.messageKey, message.body.messageBody)
+		return this.broker.send(message.body.messageKey, message.body.messageBody)
 			.then(function(response){
 				response.source = 'remote';
 				return response;
