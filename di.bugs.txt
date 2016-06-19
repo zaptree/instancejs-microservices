@@ -1,8 +1,4 @@
 
-
-
-- I need to be more flexible with naming scope and setScope (allow for forgetting the leading/trailing / )
-
 - I need an option when specifying types to be flexible about scope or set scope. i.e. for typeFactroy I want it to allow a scope/setScope of / but when in child injectors always use /service
 
 - so this is SUPER IMPORTANT. if i have 2 child injectors with different paths if I have setScope to root and there is a naming conflict what happens then? I think I need to save
@@ -12,7 +8,12 @@
 -   doing injector.get('core$start') does not work, it only works as injector.get('core/start'), I think this will be confusing
 	also I'm not sure doing $$lodash will work when doing it as a dependency in the constructor since it will be changed to //lodash
 
-- I should allow for loading modules with broken path. i.e. file /app/controllers/users/auth.js can be got with controllers$auth instead of controllers$users$auth
 
 - it should not reload the same module called with a different name, I should probably save the filePath name and when loader return a module, we search the modules
   to see if one with that path already exists and if it does use that one.
+
+  ----------------------------------- enhancements -----------------------------------
+  - di typeMatcher should allow for array of different possibilities
+  - I need to be more flexible with naming scope and setScope (allow for forgetting the leading/trailing / )
+  - I should allow for loading modules with broken path. i.e. file /app/controllers/users/auth.js can be got with controllers$auth instead of controllers$users$auth
+  - option for case insensitive loader

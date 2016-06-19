@@ -52,4 +52,8 @@ describe('CoreBroker', function () {
 			});
 	});
 
+	it.skip('should make sure that the coreBroker is created once per service', function(){
+		assert(false);
+	});
+
 });

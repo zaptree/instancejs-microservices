@@ -13,8 +13,9 @@ class TestController extends include('BaseController'){
 			}
 		};
 	}
-	constructor($broker, CoreLogger){
+	constructor($broker, $message, CoreLogger){
 		super();
+		this.message = $message;
 		this.logger = CoreLogger;
 		// make sure promise based constructor works
 		return Promise.resolve()
@@ -29,16 +30,17 @@ class TestController extends include('BaseController'){
 		if(message.body.throws){
 			throw new Error('getData forced error');
 		}
-		this.broker.response.set('cookies', 'name', 'get-data');
+		message.response.set('cookies', 'name', 'get-data');
 		return message.body.respondWith || {
 			message: message
 		};
 	}
 
 	postDataWithSet(message){
-		this.broker.response.set('headers', 'Content-Type', 'application/xml');
-		this.broker.response.set('cookies', 'name', message.body.name);
-		this.broker.response.set('statusCode', 401);
+		// message and this.message are the same thing
+		message.response.set('headers', 'Content-Type', 'application/xml');
+		this.message.response.set('cookies', 'name', message.body.name);
+		message.response.set('statusCode', 401);
 		return '<Response><name>'+ message.body.name +'</name></Response>';
 	}
 

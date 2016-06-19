@@ -1,0 +1,7 @@
+
+I need to change the flow, this is what I'm thinking at the moment:
+
+CoreService creates a broker (not what I have as coreBroker currently) for the service
+the broker is the one responsible for starting/stopping all the messengers
+a messenger calls broker.dispatch and the broker handles sending that to the messenger, the messenger passes in the
+
