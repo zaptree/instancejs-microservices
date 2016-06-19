@@ -13,8 +13,9 @@ class TestController extends include('BaseController'){
 			}
 		};
 	}
-	constructor($messenger){
+	constructor($messenger, CoreLogger){
 		super();
+		this.logger = CoreLogger;
 		// make sure promise based constructor works
 		return Promise.resolve()
 			.then(()=>{
@@ -39,6 +40,20 @@ class TestController extends include('BaseController'){
 		this.messenger.response.set('cookies', 'name', message.body.name);
 		this.messenger.response.set('statusCode', 401);
 		return '<Response><name>'+ message.body.name +'</name></Response>';
+	}
+
+	getHtml(message){
+		return message.body.html;
+	}
+
+	logMessage(message){
+		if(message.body.passInError){
+			this.logger[message.body.type](new Error(message.body.text));
+		}
+		this.logger[message.body.type](message.body.text);
+		return {
+			success: true
+		};
 	}
 
 	getRemote(message){

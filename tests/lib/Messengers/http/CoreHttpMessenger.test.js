@@ -25,7 +25,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 		http2BaseUrl = 'http://localhost:3232/api/v2',
 		http3BaseUrl = 'http://127.0.0.1:3333/api/v2';
 
-	describe('http tests', function(){
+	describe('http tests', function () {
 
 		beforeEach(function () {
 			app = new MicroServices({
@@ -33,12 +33,12 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				environment: 'http-test'
 			});
 			return app.start()
-				.then(function(){
+				.then(function () {
 					injector = app.services['project1.service1'].injector;
 				});
 		});
 
-		afterEach(function(){
+		afterEach(function () {
 			return app.stop();
 		});
 
@@ -48,14 +48,41 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				url: httpBaseUrl + '/getData?source=simpleRequest',
 				json: true
 			})
-				.spread(function(response, result){
+				.spread(function (response, result) {
 					assert.equal(response.statusCode, 200);
 					assert(response.headers['content-type'].indexOf('application/json') > -1, 'it should return the correct content-type header');
 					assert.equal(result.message.query.source, 'simpleRequest');
 				});
 		});
 
-		it('should pass in the controller a message with headers, cookies, body, query and params set', function(){
+		it('should return 404 when calling an non-existing route', function () {
+
+			return request({
+				url: httpBaseUrl + '/notExisting',
+				json: true
+			})
+				.spread(function (response, result) {
+					assert.equal(response.statusCode, 404);
+					assert.equal(result, '404 Not Found');
+				});
+		});
+
+		it('should set the response headers to html when a string is returned by the controller unless headers set otherwise', function () {
+
+			return request({
+				url: httpBaseUrl + '/getHtml',
+				json: {
+					html: '<h1>Hello</h1>'
+				}
+			})
+				.spread(function (response, result) {
+					assert.equal(response.statusCode, 200);
+					assert.equal(response.headers['content-type'], 'text/html; charset=utf-8', 'it should return the correct content-type header');
+					assert.equal(result, '<h1>Hello</h1>');
+				});
+		});
+
+		it('should pass in the controller a message with headers, cookies, body, query and params set', function () {
 			var values = {
 				token: 'KSDF98ASDJHFL43P089AUF',
 				id: '18',
@@ -83,7 +110,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				},
 				json: true
 			})
-				.spread(function(response, result){
+				.spread(function (response, result) {
 					assert.equal(response.statusCode, 200);
 					assert.equal(result.message.body.name, values.name);
 					assert.equal(result.message.headers.token, values.token);
@@ -93,7 +120,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				});
 		});
 
-		it('should allow for setting response headers', function(){
+		it('should allow for setting response headers', function () {
 			// check for response headers and specifically cookies (multiple ones)
 
 			var jar = request.jar();
@@ -103,13 +130,13 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				method: 'POST',
 				jar: jar,
 				body: {
-					name:'nick'
+					name: 'nick'
 				},
 				json: true
 			})
-				.spread(function(response){
+				.spread(function (response) {
 					var cookies = jar.getCookies(httpBaseUrl);
-					var nameCookie = _.find(cookies, {key:'name'});
+					var nameCookie = _.find(cookies, {key: 'name'});
 
 					assert.equal(response.statusCode, 401);
 					assert.equal(_.get(nameCookie, 'value'), 'nick', 'it should return the name cookie');
@@ -118,7 +145,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 
 		});
 
-		it('should reuse the server port when multiple domains are used on same port and run servers on different ports', function(){
+		it('should reuse the server port when multiple domains are used on same port and run servers on different ports', function () {
 			return Promise
 				.all([
 					request({
@@ -143,10 +170,10 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 						json: true
 					})
 				])
-				.then(function(results){
+				.then(function (results) {
 
 					assert.equal(results.length, 3);
-					_.each(results, function(res, i){
+					_.each(results, function (res, i) {
 						var response = res[0];
 						var result = res[1];
 						assert.equal(result.message.body.source, i + 1);
@@ -157,8 +184,8 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				});
 		});
 
-		it('should communicate with an another service using http if no inProc service is specified and reverse match the url params', function(){
-			var inProcSendStub = injector.stub('CoreInProcMessenger', 'send' , function(){
+		it('should communicate with an another service using http if no inProc service is specified and reverse match the url params', function () {
+			var inProcSendStub = injector.stub('CoreInProcMessenger', 'send', function () {
 				return Promise.resolve();
 			});
 			return request({
@@ -169,11 +196,14 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 					messageBody: {
 						params: {
 							type: 'proxy'
+						},
+						cookies: {
+							'session-id': '123456'
 						}
 					}
 				}
 			})
-				.spread(function(response, result){
+				.spread(function (response, result) {
 					assert.equal(response.statusCode, 200);
 					assert.equal(inProcSendStub.callCount, 0, 'it should not use the inProc messenger');
 					var remoteResponse = result;
@@ -181,11 +211,12 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 					assert.equal(remoteResponse.source, 'remote');
 					assert.equal(remoteResponse.cookies.name, 'get-data');
 					assert.equal(remoteResponse.body.message.params.type, 'proxy');
+					assert.equal(remoteResponse.body.message.cookies['session-id'], '123456', 'it should properly send cookies');
 				});
 		});
 
-		it('should communicate with an another service using inProc if a service is specified', function(){
-			var httpSendStub = injector.stub('CoreHttpMessenger', 'send' , function(){
+		it('should communicate with an another service using inProc if a service is specified', function () {
+			var httpSendStub = injector.stub('CoreHttpMessenger', 'send', function () {
 				return Promise.resolve();
 			});
 			return request({
@@ -200,7 +231,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 					}
 				}
 			})
-				.spread(function(response, result){
+				.spread(function (response, result) {
 					assert.equal(response.statusCode, 200);
 					assert.equal(httpSendStub.callCount, 0, 'it should not use the http messenger');
 					var remoteResponse = result;
@@ -211,7 +242,7 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				});
 		});
 
-		it('should handle throwing an error remotely the same inProc and http', function(){
+		it('should handle throwing an error remotely the same inProc and http', function () {
 			var messageBody = {
 				url: httpBaseUrl + '/getRemote',
 				method: 'POST',
@@ -234,9 +265,9 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 					request(messageBody),
 					request(messageBody2)
 				])
-				.then(function(responses){
+				.then(function (responses) {
 					assert.equal(responses.length, 2);
-					_.each(responses,function(res){
+					_.each(responses, function (res) {
 						var response = res[0];
 						var result = res[1];
 						assert.equal(response.statusCode, 200);
@@ -246,19 +277,19 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				});
 		});
 
-		it('should successfully serve static files', function(){
+		it('should successfully serve static files', function () {
 			return request({
 				url: staticBaseUrl + '/info.txt'
 			})
-				.spread(function(response,result){
+				.spread(function (response, result) {
 					assert.equal(result.trim(), 'static file');
 				});
 		});
 
 	});
 
-	describe('inProcOnly tests', function(){
-		it('should not start any servers when using the inProcOnly option', function(){
+	describe('inProcOnly tests', function () {
+		it('should not start any servers when using the inProcOnly option', function () {
 			var app = new MicroServices({
 				root: TEST_SERVICE_DIR,
 				config: {
@@ -267,18 +298,18 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 				environment: 'http-test'
 			});
 
-			var httpStartStub = app.injector.stub('CoreHttpMessenger', 'start', function(){
+			var httpStartStub = app.injector.stub('CoreHttpMessenger', 'start', function () {
 				return Promise.resolve();
 			});
 
 			return app.start()
-				.then(function(){
+				.then(function () {
 					injector = app.services['project1.service1'].injector;
 				})
-				.then(function(){
+				.then(function () {
 					assert.equal(httpStartStub.callCount, 0);
 				})
-				.then(function(){
+				.then(function () {
 					var tester = app.tester.get('project1.service1');
 					return tester.send('getData', {
 						params: {
@@ -289,17 +320,16 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 						}
 					});
 				})
-				.then(function(result){
+				.then(function (result) {
 					assert.equal(result.statusCode, 200);
 					assert.equal(result.body.message.params.type, 'test');
 					assert.equal(result.body.message.body.name, 'john');
 				})
-				.finally(function(){
+				.finally(function () {
 					app.stop();
 				});
 		});
 	});
-
 
 
 });

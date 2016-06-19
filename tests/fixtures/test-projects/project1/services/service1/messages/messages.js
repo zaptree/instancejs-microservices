@@ -39,6 +39,16 @@ module.exports = {
 			action: 'TestController.generatorMethod',
 			match: '/generatorMethod'
 		},
+		'getHtml': {
+			type: 'http',
+			action: 'TestController.getHtml',
+			match: '/getHtml'
+		},
+		'logMessage': {
+			type: 'http',
+			action: 'TestController.logMessage',
+			match: '/logMessage'
+		},
 		'switch': {
 			type: 'http',
 			action: 'TestController.switch',
@@ -96,6 +106,11 @@ module.exports = {
 			type: 'http',
 			url: 'http://localhost:3333/api/v1/getData/:type',
 			schema: 'user'
+		},
+		'toMissing': {
+			type: 'http',
+			target: 'project1.service1/missing',
+			url: 'http://localhost:3333/api/v1/missing'
 		}
 	},
 	types: {
@@ -122,12 +137,20 @@ module.exports = {
 				path: '/api/v2',
 				host: '127.0.0.1'
 			},
+			httpNoMessages: {
+				messenger: 'CoreHttpMessenger',
+				middleware: [],
+				port: 3333,
+				path: '/api/noMessages',
+				host: '127.0.0.1'
+			},
 			static: {
 				messenger: 'CoreHttpMessenger',
 				middleware: [],
 				port: 3333,
+				staticFolder: 'static',
 				staticFolders: {
-					'/': './static'
+					'/': './{{staticFolder}}'
 				},
 				host: '127.0.0.1'
 			}
