@@ -27,11 +27,12 @@
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
     "cookies": "^0.6.1",
+    "dnode": "^1.2.2",
     "express": "^4.13.4",
     "instance-di": "github:zaptree/di#00_00_02",
-    "schema-validator": "github:zaptree/schema-validator#0_1_1",
     "lodash": "^4.6.1",
     "request": "^2.69.0",
+    "schema-validator": "github:zaptree/schema-validator#0_1_1",
     "serve-static": "^1.10.2",
     "vhost": "^3.0.2"
   },
