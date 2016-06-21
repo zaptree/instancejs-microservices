@@ -75,7 +75,7 @@ describe('Di Integration', function(){
 	});
 
 	it.skip('should test global singletons', function(){
-		assert(false, 'why is the global not use the ');
+		assert(false, 'can the global use the defaultFactory taking typeFactgory scope into consideration???');
 	});
 
 });

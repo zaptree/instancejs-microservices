@@ -42,6 +42,10 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 			return app.stop();
 		});
 
+		it.skip('should be able to share port with different services when path is not the same', function(){
+			assert(false, 'I think this will not work unless I make coreMessenger files global');
+		});
+
 		it('should successfully start the http servers and respond to http requests', function () {
 
 			return request({
