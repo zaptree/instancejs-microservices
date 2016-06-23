@@ -32,7 +32,7 @@ module.exports = {
 		'notExtendedGetData': {
 			type: 'http',
 			action: 'NotExtendingController.getData',
-			match: '/getData/(:type)'
+			match: '/notExtendedGetData/(:type)'
 		},
 		'generatorMethod': {
 			type: 'http',

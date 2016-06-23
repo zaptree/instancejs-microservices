@@ -292,48 +292,5 @@ describe('lib/Messengers/CoreHttpMessenger', function () {
 
 	});
 
-	describe('inProcOnly tests', function () {
-		it('should not start any servers when using the inProcOnly option', function () {
-			var app = new MicroServices({
-				root: TEST_SERVICE_DIR,
-				config: {
-					inProcOnly: true
-				},
-				environment: 'http-test'
-			});
-
-			var httpStartStub = app.injector.stub('CoreHttpMessenger', 'start', function () {
-				return Promise.resolve();
-			});
-
-			return app.start()
-				.then(function () {
-					injector = app.services['project1.service1'].injector;
-				})
-				.then(function () {
-					assert.equal(httpStartStub.callCount, 0);
-				})
-				.then(function () {
-					var tester = app.tester.get('project1.service1');
-					return tester.send('getData', {
-						params: {
-							type: 'test'
-						},
-						body: {
-							name: 'john'
-						}
-					});
-				})
-				.then(function (result) {
-					assert.equal(result.statusCode, 200);
-					assert.equal(result.body.message.params.type, 'test');
-					assert.equal(result.body.message.body.name, 'john');
-				})
-				.finally(function () {
-					app.stop();
-				});
-		});
-	});
-
 
 });

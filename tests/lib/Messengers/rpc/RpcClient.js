@@ -1,6 +1,7 @@
 'use strict';
 
-var dnode = require('dnode');
+var dnode = require('dnode'),
+	Promise = require('bluebird');
 
 function RpcClient(options) {
 	this.options = options;
