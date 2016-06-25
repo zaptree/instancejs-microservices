@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/zaptree/microservices#readme",
   "dependencies": {
+    "amqplib": "^0.4.2",
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
     "cookies": "^0.6.1",

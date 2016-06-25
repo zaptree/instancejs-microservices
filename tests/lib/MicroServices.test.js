@@ -34,6 +34,10 @@ describe('lib/MicroServices', function(){
 		assert.deepEqual(app.settings, settings);
 	});
 
+	it('should allow for multiple sub-environments via . seperation when using environmentRequire', function(){
+
+	});
+
 	it('should require and extend with the appropriate modules when using environmentRequire', function(){
 		var settings = {
 			root: TEST_PROJECTS_DIR,
