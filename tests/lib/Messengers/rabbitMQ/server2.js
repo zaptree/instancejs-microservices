@@ -59,22 +59,22 @@ var settingsTypes = {
 			noAck: false
 		},
 		exchange: {
-			name: 'direct1',
-			type: 'direct',
+			name: 'instance_default_topic_exchange',
+			type: 'topic',
 			options: {
 				durable: true
 			}
 		},
 		queue: {
 			// when using a names queue, after the queue is created and bound to the exchange messages won't be lost, a new queue though won't get old messages, not sure how to do that
-			name: 'random_ldasdfsdfsdf',
+			name: 'random_ccc',
 			options: {
 				exclusive: false,
 				durable: true
 			}
 
 		},
-		binding: 'products'
+		binding: 'products.*'
 	}
 }
 

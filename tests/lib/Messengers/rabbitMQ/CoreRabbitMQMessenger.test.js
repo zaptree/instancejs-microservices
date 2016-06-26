@@ -11,9 +11,10 @@ var assert = require('chai').assert,
 var Path = require('path');
 
 // project modules
-var MicroServices = require('../../../../lib/MicroServices');
+var RabbitMQClient = require('./RabbitMQClient'),
+	MicroServices = require('../../../../lib/MicroServices');
 
-describe('testing rabbitMQ', function(){
+describe.skip('testing rabbitMQ', function(){
 	this.timeout(10000);
 	const CONNECTION_STRING = 'amqp://wbazinkp:CLL57elF9hYanv5OE57mD9OpeSr09BxF@jellyfish.rmq.cloudamqp.com/wbazinkp';
 
@@ -137,16 +138,16 @@ describe('testing rabbitMQ', function(){
 
 	});
 
-	it.only('should send a message direct exchange', function(){
+	it('should send a message direct exchange', function(){
 		var settings = {
 			exchange: {
-				name: 'direct1',
-				type: 'direct',
+				name: 'topic1',
+				type: 'topic',
 				options: {
 					durable: true
 				}
 			},
-			routingKey: 'logs'		// this is the the name of the binding for the queue to the exchange
+			routingKey: 'products.shoesd'		// this is the the name of the binding for the queue to the exchange
 		};
 		var channel = this.channel.channel;
 		return Promise.resolve()
@@ -186,21 +187,37 @@ describe.skip('lib/Messengers/CoreRabbitMQMessenger', function () {
 		app,
 		tester;
 
+	function proxyMessage(controller, action){
+		return function(){
+			return new Promise((resolve)=>{
+				tester.injector.stub(controller, action, function(message){
+					// adding a small timeout so that the consumer finishes up
+					setTimeout(function(){
+						resolve(message);
+					},100);
 
+				})
+			});
+		};
 
-	describe('rpc tests', function () {
+	}
+
+	describe('rabbitMQ tests', function () {
 
 		beforeEach(function () {
 			app = new MicroServices({
 				root: TEST_SERVICE_DIR,
-				environment: 'rpc-test'
+				environment: 'amqp-test'
 			});
 			return app.start()
 				.then(() => {
 					tester = app.tester.get('project1.service1');
-					this.client = new RpcClient({
-						port: 5003,
-						host: 'localhost'
+					return tester.injector.get('$messages');
+				})
+				.then((messages)=>{
+					this.client = new RabbitMQClient({
+						uri: messages.types.incoming.amqp.uri,
+						exchange: 'instance_default_topic_exchange'
 					});
 				});
 		});
@@ -223,10 +240,9 @@ describe.skip('lib/Messengers/CoreRabbitMQMessenger', function () {
 				}
 			};
 			return this.client.send('getData', request)
-				.then(function (response) {
-					assert.equal(response.statusCode, 200);
-					//assert(response.headers['content-type'].indexOf('application/json') > -1, 'it should return the correct content-type header');
-					assert.equal(response.body.message.query.source, 'simpleRequest');
+				.then(proxyMessage('TestController', 'getData'))
+				.then(function (request) {
+					assert.equal(request.query.source, 'simpleRequest');
 				});
 		});
 
