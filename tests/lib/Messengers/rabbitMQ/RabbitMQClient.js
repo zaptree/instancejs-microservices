@@ -36,7 +36,9 @@ RabbitMQClient.prototype.getChannel = function () {
 };
 
 RabbitMQClient.prototype.stop = function () {
-	return this.connection.connection.close();
+	if(this.connection){
+		return this.connection.connection.close();
+	}
 };
 
 

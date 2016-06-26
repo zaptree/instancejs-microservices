@@ -1,6 +1,7 @@
 'use strict';
 
-var Promise = require('bluebird');
+var Promise = require('bluebird'),
+	_ = require('lodash');
 
 class TestController extends include('BaseController'){
 	get components(){
@@ -61,7 +62,7 @@ class TestController extends include('BaseController'){
 	getRemote(message){
 		return this.broker.send(message.body.messageKey, message.body.messageBody)
 			.then(function(response){
-				response.source = 'remote';
+				_.set(response, 'source', 'remote');
 				return response;
 			});
 	}

@@ -22,10 +22,10 @@ module.exports = {
 		//},
 	},
 	outgoing: {
-		//'sendData': {
-		//	type: 'amqp',
-		//	match: 'getData'
-		//},
+		'sendData': {
+			type: 'amqp',
+			routingKey: 'getData'
+		},
 		//'sendDataInProc': {
 		//	type: 'amqp',
 		//	target: 'project1.service1/getData',
@@ -33,6 +33,12 @@ module.exports = {
 		//},
 	},
 	types: {
+		// fixme: add ability to have shared config values
+		shared: {
+			amqp: {
+				uri: 'amqp://wbazinkp:CLL57elF9hYanv5OE57mD9OpeSr09BxF@jellyfish.rmq.cloudamqp.com/wbazinkp'
+			}
+		},
 		incoming: {
 			// we define the types of messengers available
 			amqp: {
@@ -46,6 +52,10 @@ module.exports = {
 			//}
 		},
 		outgoing: {
+			amqp: {
+				messenger: 'CoreRabbitMQMessenger',
+				uri: 'amqp://wbazinkp:CLL57elF9hYanv5OE57mD9OpeSr09BxF@jellyfish.rmq.cloudamqp.com/wbazinkp'
+			},
 			//amqp: {
 			//	messenger: 'CoreRabbitMQMessenger',
 			//	port: 5003,

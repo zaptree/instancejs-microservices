@@ -182,7 +182,7 @@ describe.skip('testing rabbitMQ', function(){
 });
 
 
-describe.skip('lib/Messengers/CoreRabbitMQMessenger', function () {
+describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 	var TEST_SERVICE_DIR = Path.join(__dirname, '../../../fixtures/test-projects/project1/services/service1'),
 		app,
 		tester;
@@ -229,11 +229,7 @@ describe.skip('lib/Messengers/CoreRabbitMQMessenger', function () {
 			]);
 		});
 
-		it.skip('should be able to share port with different services when host is not the same, or actually throw an error when they are', function () {
-			assert(false, 'I think this will not work unless I make coreMessenger files global');
-		});
-
-		it('should successfully start the rpc servers and respond to rpc requests', function () {
+		it('should successfully start the rabbitMQ consumers and receive messages', function () {
 			var request = {
 				query: {
 					source: 'simpleRequest'
@@ -274,39 +270,18 @@ describe.skip('lib/Messengers/CoreRabbitMQMessenger', function () {
 			};
 
 			return this.client.send('getData', request)
-				.then(function (response) {
-					assert.equal(response.statusCode, 200);
-					assert.equal(response.body.message.body.name, values.name);
-					assert.equal(response.body.message.headers.token, values.token);
-					assert.equal(response.body.message.query.id, values.id);
-					assert.equal(response.body.message.params.type, values.type);
-					assert.equal(response.body.message.cookies['session-id'], values.sessionId);
+				.then(proxyMessage('TestController', 'getData'))
+				.then(function (request) {
+					assert.equal(request.body.name, values.name);
+					assert.equal(request.headers.token, values.token);
+					assert.equal(request.query.id, values.id);
+					assert.equal(request.params.type, values.type);
+					assert.equal(request.cookies['session-id'], values.sessionId);
 				});
 		});
 
-		it('should allow for setting response headers', function () {
-			// check for response headers and specifically cookies (multiple ones)
-
-			var request = {
-				body: {
-					name: 'nick'
-				}
-			};
-			return this.client.send('postDataWithSet', request)
-
-				.then(function (response) {
-
-					assert.equal(response.statusCode, 401);
-					assert.equal(response.cookies.name, 'nick', 'it should return the name cookie');
-					assert.equal(response.headers['Content-Type'], 'application/xml', 'it should have the properly set content-type header');
-				});
-
-		});
-
-		it('should communicate with an another service using rpc if no inProc service is specified and reverse match the url params', function () {
-			var inProcSendStub = tester.injector.stub('CoreInProcMessenger', 'send', function () {
-				return Promise.resolve();
-			});
+		it.only('should communicate with an another service using rpc if no inProc service is specified and reverse match the url params', function () {
+			var inProcSendStub = tester.injector.spy('CoreInProcMessenger', 'send');
 			var request = {
 				body: {
 					messageKey: 'sendData',
@@ -320,16 +295,12 @@ describe.skip('lib/Messengers/CoreRabbitMQMessenger', function () {
 					}
 				}
 			};
-			return this.client.send('getRemote', request)
-				.then(function (response) {
-					assert.equal(response.statusCode, 200);
-					assert.equal(inProcSendStub.callCount, 0, 'it should not use the inProc messenger');
-					var remoteResponse = response.body;
-					assert.equal(remoteResponse.statusCode, 200);
-					assert.equal(remoteResponse.source, 'remote');
-					assert.equal(remoteResponse.cookies.name, 'get-data');
-					assert.equal(remoteResponse.body.message.params.type, 'proxy');
-					assert.equal(remoteResponse.body.message.cookies['session-id'], '123456', 'it should properly send cookies');
+			return tester.send('getRemote', request)
+				.then(proxyMessage('TestController', 'getData'))
+				.then(function (request) {
+					assert.equal(inProcSendStub.callCount, 1, 'it should not use the inProc messenger');
+					assert.equal(request.params.type, 'proxy');
+					assert.equal(request.cookies['session-id'], '123456', 'it should properly send cookies');
 				});
 		});
 
