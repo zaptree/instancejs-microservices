@@ -10,27 +10,28 @@ module.exports = {
 			},
 			binding: 'getData'
 		},
-		//'postDataWithSet': {
-		//	type:'amqp',
-		//	action: 'TestController.postDataWithSet',
-		//	match: 'postDataWithSet'
-		//},
-		//'getRemote': {
-		//	type:'amqp',
-		//	action: 'TestController.getRemote',
-		//	match: 'getRemote'
-		//},
+		'getDataNoAck': {
+			type: 'amqp',
+			action: 'TestController.getData',
+			consumerOptions: {
+				noAck: true
+			},
+			queue: {
+				name: ''	// we want an anonymous queue for testing so that it creates a new one each time
+			},
+			binding: 'getDataNoAck'
+		}
 	},
 	outgoing: {
 		'sendData': {
 			type: 'amqp',
 			routingKey: 'getData'
 		},
-		//'sendDataInProc': {
-		//	type: 'amqp',
-		//	target: 'project1.service1/getData',
-		//	match: 'getData'
-		//},
+		'sendDataInProc': {
+			type: 'amqp',
+			target: 'project1.service1/getData',
+			routingKey: 'getData'
+		}
 	},
 	types: {
 		// fixme: add ability to have shared config values

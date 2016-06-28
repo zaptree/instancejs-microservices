@@ -38,6 +38,8 @@ TODO list:
 
 ### sinon integration
 
+Note that there is a known limitation to stubbing and spying: If the class method being stubbed has already been injected before the stub was created, the method will not be stubbed. This is because the stub get's created during creation of the instance.
+
 
 ## Dependency Injection
 A lot of this stuff might be better to put directly in the di module and leave here only docs specific to framework

@@ -7,11 +7,11 @@ function RabbitMQClient(options) {
 	this.options = options;
 }
 
-RabbitMQClient.prototype.send = function (routingKey, message) {
+RabbitMQClient.prototype.send = function (routingKey, message, raw) {
 
 	return this.getChannel()
 		.then(()=>{
-			this.connection.channel.publish(this.options.exchange, routingKey, new Buffer(JSON.stringify(message)));
+			this.connection.channel.publish(this.options.exchange, routingKey, new Buffer(raw ? message : JSON.stringify(message)));
 		});
 
 };

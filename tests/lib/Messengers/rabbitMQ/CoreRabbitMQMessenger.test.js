@@ -188,16 +188,17 @@ describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 		tester;
 
 	function proxyMessage(controller, action){
-		return function(){
-			return new Promise((resolve)=>{
-				tester.injector.stub(controller, action, function(message){
-					// adding a small timeout so that the consumer finishes up
-					setTimeout(function(){
-						resolve(message);
-					},100);
+		var promise = new Promise((resolve)=>{
+			tester.injector.stub(controller, action, function(message){
+				// adding a small timeout so that the consumer finishes up
+				setTimeout(function(){
+					resolve(message);
+				},100);
 
-				})
-			});
+			})
+		});
+		return function(){
+			return promise;
 		};
 
 	}
@@ -242,6 +243,47 @@ describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 				});
 		});
 
+		it('should try twice to get a message that fails the first time', function(done){
+			var tries = 0;
+
+			tester.injector.stub('TestController', 'getData', function(message){
+				if(!tries){
+					tries++;
+					return Promise.reject('It failed');
+				}
+				// adding a small timeout so that the consumer finishes up
+				setTimeout(function(){
+					done();
+				},100);
+
+			});
+
+			var request = {
+				query: {
+					source: 'simpleRequest'
+				}
+			};
+			this.client.send('getData', request);
+		});
+
+		it('should catch the error when failing to parse a message', function(done){
+
+			// since the coreLogger was already injected in the CoreRabbitMQMessenger we can't use the injector.stub since that only works if stubbed before hand
+			tester.injector.get('CoreLogger')
+				.then((coreLogger)=>{
+					sinon.stub(coreLogger, 'error', function(error){
+						assert(error.message.indexOf('Unexpected token') > -1);
+						// adding a small timeout so that the consumer finishes up
+						setTimeout(function(){
+							done();
+						},100);
+					});
+					var badJson = '{badJson,';
+					this.client.send('getDataNoAck', badJson, true);
+				});
+
+		});
+
 		it('should pass in the controller a message with headers, cookies, body, query and params set', function () {
 			var values = {
 				token: 'KSDF98ASDJHFL43P089AUF',
@@ -280,7 +322,7 @@ describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 				});
 		});
 
-		it.only('should communicate with an another service using rpc if no inProc service is specified and reverse match the url params', function () {
+		it('should communicate with an another service using rpc if no inProc service is specified and reverse match the url params', function () {
 			var inProcSendStub = tester.injector.spy('CoreInProcMessenger', 'send');
 			var request = {
 				body: {
@@ -304,45 +346,11 @@ describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 				});
 		});
 
-		it('should re-use the same client connection when sending rpc messages', function () {
-			var _this = this;
-			sinon.spy(dnode, 'connect');
-
-			var request = {
-				body: {
-					messageKey: 'sendData',
-					messageBody: {}
-				}
-			};
-			function sendAndAssert(){
-				return _this.client.send('getRemote', request)
-					.then(function (response) {
-						assert.equal(response.statusCode, 200);
-						var remoteResponse = response.body;
-						assert.equal(remoteResponse.statusCode, 200);
-						assert.equal(remoteResponse.source, 'remote');
-						return response;
-					});
-			}
-			return sendAndAssert()
-				.then(function(){
-					// once from using the test client and once from the CoreRpcMessenger
-					assert.equal(dnode.connect.callCount, 2);
-				})
-				.then(sendAndAssert)
-				.then(function(){
-					// once from using the client + the 2 previous times
-					assert.equal(dnode.connect.callCount, 3);
-				})
-				.finally(function(){
-					dnode.connect.restore();
-				});
-		});
-
 		it('should communicate with an another service using inProc if a service is specified', function () {
-			var rpcSendStub = tester.injector.stub('CoreRpcMessenger', 'send', function () {
+			var rabbitMQSendStub = tester.injector.stub('CoreRabbitMQMessenger', 'send', function () {
 				return Promise.resolve();
 			});
+
 			var request = {
 				body: {
 					messageKey: 'sendDataInProc',
@@ -353,48 +361,18 @@ describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 					}
 				}
 			};
-			return this.client.send('getRemote', request)
-				.then(function (response) {
-					assert.equal(response.statusCode, 200);
-					assert.equal(rpcSendStub.callCount, 0, 'it should not use the rpc messenger');
-					var remoteResponse = response.body;
-					assert.equal(remoteResponse.statusCode, 200);
-					assert.equal(remoteResponse.source, 'remote');
-					assert.equal(remoteResponse.cookies.name, 'get-data');
-					assert.equal(remoteResponse.body.message.params.type, 'proxy');
+			return tester.send('getRemote', request)
+				.then(function(response){
+					assert(!response.body, 'it should not have a body even with inProc');
+				})
+				.then(proxyMessage('TestController', 'getData'))
+				.then(function (request) {
+					assert.equal(request.params.type, 'proxy');
+					assert.equal(rabbitMQSendStub.callCount, 0, 'it should not use the rpc messenger');
 				});
 		});
 
-		it('should handle throwing an error remotely the same inProc and rpc', function () {
-			var messageBody = {
-				body: {
-					messageKey: 'sendData',
-					messageBody: {
-						body: {
-							throws: true
-						},
-						params: {
-							type: 'proxy'
-						}
-					}
-				}
-			};
-			var messageBody2 = _.cloneDeep(messageBody);
-			messageBody2.body.messageKey = 'sendDataInProc';
-			return Promise
-				.all([
-					this.client.send('getRemote', messageBody),
-					this.client.send('getRemote', messageBody2)
-				])
-				.then(function (responses) {
-					assert.equal(responses.length, 2);
-					_.each(responses, function (response) {
-						assert.equal(response.statusCode, 200);
-						var remoteResponse = response.body;
-						assert.equal(remoteResponse.statusCode, 500);
-					});
-				});
-		});
+
 
 	});
 
