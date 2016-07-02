@@ -204,7 +204,7 @@ describe('lib/Messengers/CoreRabbitMQMessenger', function () {
 	}
 
 	describe('rabbitMQ tests', function () {
-
+		this.timeout(10000);
 		beforeEach(function () {
 			app = new MicroServices({
 				root: TEST_SERVICE_DIR,
