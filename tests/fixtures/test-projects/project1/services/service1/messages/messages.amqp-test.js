@@ -37,14 +37,14 @@ module.exports = {
 		// fixme: add ability to have shared config values
 		shared: {
 			amqp: {
-				uri: 'amqp://wbazinkp:CLL57elF9hYanv5OE57mD9OpeSr09BxF@jellyfish.rmq.cloudamqp.com/wbazinkp'
+				uri: 'amqp://guest:guest@localhost'
 			}
 		},
 		incoming: {
 			// we define the types of messengers available
 			amqp: {
 				messenger: 'CoreRabbitMQMessenger',
-				uri: 'amqp://wbazinkp:CLL57elF9hYanv5OE57mD9OpeSr09BxF@jellyfish.rmq.cloudamqp.com/wbazinkp'
+				uri: 'amqp://guest:guest@localhost'
 			},
 			//amqpNoMessages: {
 			//	messenger: 'CoreRabbitMQMessenger',
@@ -55,7 +55,7 @@ module.exports = {
 		outgoing: {
 			amqp: {
 				messenger: 'CoreRabbitMQMessenger',
-				uri: 'amqp://wbazinkp:CLL57elF9hYanv5OE57mD9OpeSr09BxF@jellyfish.rmq.cloudamqp.com/wbazinkp'
+				uri: 'amqp://guest:guest@localhost'
 			},
 			//amqp: {
 			//	messenger: 'CoreRabbitMQMessenger',
