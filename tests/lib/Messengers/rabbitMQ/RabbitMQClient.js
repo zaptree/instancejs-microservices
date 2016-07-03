@@ -28,9 +28,9 @@ RabbitMQClient.prototype.getChannel = function () {
 							channel: channel
 						};
 						return this.connection;
-					})
+					});
 
-			})
+			});
 	}
 	return Promise.resolve(this.connection);
 };
