@@ -14,13 +14,13 @@ var folders = {
 
 
 
-gulp.task('test', ['lint'], function () {
+gulp.task('test', ['lint'], function (done) {
 
 	var istanbulOptions = {
 		coverageVariable: '$$cov_' + new Date().getTime() + '$$',
-		thresholds: {global: 100}
+		thresholds: {global: 80}
 	};
-	return gulp.src(folders.istanbul)
+	gulp.src(folders.istanbul)
 		.pipe(istanbul(istanbulOptions)) // Covering files
 		.pipe(microservicesInstabul(istanbulOptions))
 		//.pipe(istanbul.hookRunInThisContext(istanbulOptions))
@@ -30,7 +30,8 @@ gulp.task('test', ['lint'], function () {
 			gulp.src(folders.test, {read: false})
 				.pipe(mocha())
 				.pipe(istanbul.writeReports(istanbulOptions)) // Creating the reports after tests ran
-				.pipe(istanbul.enforceThresholds(istanbulOptions)); // Enforce a coverage of at least 100%
+				.pipe(istanbul.enforceThresholds(istanbulOptions)) // Enforce a coverage of at least 100%
+				.on('finish', done);
 		});
 
 });
