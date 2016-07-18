@@ -1,5 +1,5 @@
 {
-  "name": "instance.js.microservices",
+  "name": "instancejs-microservices",
   "version": "0.0.1",
   "description": "Microservices Framework",
   "main": "lib/MicroServices.js",
