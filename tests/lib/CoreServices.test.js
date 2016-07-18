@@ -35,6 +35,10 @@ describe('lib/CoreService', function(){
 	it('should be able to get an instance of the CoreService class', function(){
 		assert.isObject(coreService);
 	});
+	
+	it('should inject the service bootstrap', function(){
+
+	});
 
 
 	it('should create an instance of each messenger and pass in the corresponding messages/options', function(){
