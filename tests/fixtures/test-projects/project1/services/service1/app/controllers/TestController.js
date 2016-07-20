@@ -9,7 +9,8 @@ class TestController extends include('BaseController'){
 			testComponent: {
 				component: 'TestComponent',
 				options: {
-					switchMethod: 'switched'
+					from: 'switched',
+					to: 'switch'
 				}
 			}
 		};

@@ -10,10 +10,11 @@ class TestComponent {
 		};
 	}
 	switch(func){
+		let options = this.settings.options;
 		// original function get's replaced with whatever we return here
 		return function(action, message){
-			if(action==='switch'){
-				action='switched';
+			if(action===options.to){
+				action=options.from;
 			}
 			return Promise.resolve(func.call(this, action, message))
 				.then(function(res){
