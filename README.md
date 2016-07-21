@@ -109,7 +109,7 @@ A lot of this stuff might be better to put directly in the di module and leave h
     }
 ```
 
-- instance, new: these types are not singletons and thus scope is irrelevant since the instance is not saved but discarded after use.
+- instance, new, component: these types are not singletons and thus scope is irrelevant since the instance is not saved but discarded after use.
 ```
     {
         singleton: false,
